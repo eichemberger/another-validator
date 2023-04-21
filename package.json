@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "German Eichemberger",
   "license": "MIT",
-  "description": "",
+  "description": "just another-validator",
   "main": "dist/index.min.js",
   "types": "dist/index.d.ts",
   "files": [
