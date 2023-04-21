@@ -1,4 +1,4 @@
-import {Validator} from "../src/validators/Validator";
+import {Validator} from "../src";
 import {commonMessages, messages} from "../src/constants/messages";
 import {ValidationError} from "../src/errors/ValidationError";
 import {buildErrorMsg} from "../src/utils/buildErrorMsg";

@@ -1,6 +1,6 @@
 import {ValidationError} from "../src/errors/ValidationError";
 import {commonMessages} from "../src/constants/messages";
-import {BaseValidator} from "../src/validators/BaseValidator";
+import {BaseValidator} from "../src";
 
 class TestValidator extends BaseValidator {
     public testHandlePossibleNull(input: any) {
