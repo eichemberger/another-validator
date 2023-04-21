@@ -21,5 +21,5 @@ export {
     ONLY_CHARS_REGEX,
     NO_SPECIAL_CHARS_REGEX,
     URL_REGEX,
-    EMAIL_REGEX,
+    EMAIL_REGEX
 };

@@ -11,7 +11,7 @@ import {
   ONLY_NUMBERS_REGEX,
   SPECIAL_CHAR_REGEX,
   UPPERCASE_REGEX,
-  URL_REGEX,
+  URL_REGEX
 } from "../constants/regex";
 import {BaseValidator} from "./BaseValidator";
 import {ValidationError} from "../errors/ValidationError";
@@ -29,28 +29,28 @@ const buildValidation = (message: string, validationFunc: RuleFunction<string>, 
     status: false,
     validationFunc: {func: validationFunc, message},
     value
-  }
-}
+  };
+};
 
 export class Validator extends BaseValidator implements IValidator<string> {
   private rules: CustomValidator<string>[] = [];
   private isUrlFlag = buildValidation(messages.isUrl, (input: string) => URL_REGEX.test(input));
-  private notEmptyFlag = buildValidation(messages.notEmpty, (input) => !(input.length === 0))
-  private isEmailFlag = buildValidation(messages.isEmail, (input) => EMAIL_REGEX.test(input))
-  private hasNumber = buildValidation(messages.hasNumber,(input) => NUMBER_REGEX.test(input))
-  private notBlankFlag = buildValidation(messages.notBlank, (input) => !(input.trim().length === 0))
-  private noNumbersFlag = buildValidation(messages.noNumbers, (input) => !NO_NUMBERS_REGEX.test(input))
-  private hasUppercase = buildValidation(messages.hasUppercase, (input) => UPPERCASE_REGEX.test(input))
-  private hasLowercase = buildValidation(messages.hasLowercase, (input) => LOWERCASE_REGEX.test(input))
-  private onlyNumbersFlag = buildValidation(messages.onlyNumbers, (input) => ONLY_NUMBERS_REGEX.test(input))
-  private onlyCharactersFlag = buildValidation(messages.onlyCharacters, (input) => ONLY_CHARS_REGEX.test(input))
-  private noWhitespacesFlag = buildValidation(messages.noWhitespaces, (input) => !NO_WHITESPACES_REGEX.test(input))
+  private notEmptyFlag = buildValidation(messages.notEmpty, (input) => !(input.length === 0));
+  private isEmailFlag = buildValidation(messages.isEmail, (input) => EMAIL_REGEX.test(input));
+  private hasNumber = buildValidation(messages.hasNumber,(input) => NUMBER_REGEX.test(input));
+  private notBlankFlag = buildValidation(messages.notBlank, (input) => !(input.trim().length === 0));
+  private noNumbersFlag = buildValidation(messages.noNumbers, (input) => !NO_NUMBERS_REGEX.test(input));
+  private hasUppercase = buildValidation(messages.hasUppercase, (input) => UPPERCASE_REGEX.test(input));
+  private hasLowercase = buildValidation(messages.hasLowercase, (input) => LOWERCASE_REGEX.test(input));
+  private onlyNumbersFlag = buildValidation(messages.onlyNumbers, (input) => ONLY_NUMBERS_REGEX.test(input));
+  private onlyCharactersFlag = buildValidation(messages.onlyCharacters, (input) => ONLY_CHARS_REGEX.test(input));
+  private noWhitespacesFlag = buildValidation(messages.noWhitespaces, (input) => !NO_WHITESPACES_REGEX.test(input));
   private hasSpecialCharacter = buildValidation(messages.hasSpecialCharacter, (input) => SPECIAL_CHAR_REGEX.test(input));
-  private minLengthFlag = buildValidation(messages.minLength, (input) => input.length < this.minLengthFlag.value, 0)
+  private minLengthFlag = buildValidation(messages.minLength, (input) => input.length < this.minLengthFlag.value, 0);
   private maxLengthFlag = buildValidation(messages.maxLength, (input) => input.length > this.maxLengthFlag.value, Infinity);
   private noRepeatedCharactersFlag = buildValidation(messages.noRepeatedCharacters, (input) => !this.hasRepeatedChars(input));
   private noSpecialCharactersFlag = buildValidation(messages.noSpecialCharacters, (input) => NO_SPECIAL_CHARS_REGEX.test(input));
-  private fixedLengthFlag = buildValidation(messages.fixedLength, (input) => input.length === this.fixedLengthFlag.value, 0)
+  private fixedLengthFlag = buildValidation(messages.fixedLength, (input) => input.length === this.fixedLengthFlag.value, 0);
 
   constructor(field?: string) {
     super(field);
@@ -60,7 +60,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
     this.notEmptyFlag.status = true;
     this.notEmptyFlag.validationFunc.message = message || messages.notEmpty;
 
-    this.rules.push(this.notEmptyFlag.validationFunc)
+    this.rules.push(this.notEmptyFlag.validationFunc);
     return this;
   }
 
@@ -68,7 +68,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
     this.notBlankFlag.status = true;
     this.notBlankFlag.validationFunc.message  = message || messages.notEmpty;
 
-    this.rules.push(this.notBlankFlag.validationFunc)
+    this.rules.push(this.notBlankFlag.validationFunc);
     return this;
   }
 
@@ -99,7 +99,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
       this.isEmailFlag.validationFunc.message  = message;
     }
 
-    this.rules.push(this.isEmailFlag.validationFunc)
+    this.rules.push(this.isEmailFlag.validationFunc);
     return this;
   }
 
@@ -109,7 +109,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
       this.isUrlFlag.validationFunc.message  = message;
     }
 
-    this.rules.push(this.isUrlFlag.validationFunc)
+    this.rules.push(this.isUrlFlag.validationFunc);
     return this;
   }
 
@@ -166,7 +166,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
       this.hasUppercase.validationFunc.message  = message;
     }
 
-    this.rules.push(this.hasUppercase.validationFunc)
+    this.rules.push(this.hasUppercase.validationFunc);
     return this;
   }
 
@@ -176,18 +176,18 @@ export class Validator extends BaseValidator implements IValidator<string> {
       this.hasLowercase.validationFunc.message  = message;
     }
 
-    this.rules.push(this.hasLowercase.validationFunc)
+    this.rules.push(this.hasLowercase.validationFunc);
     return this;
   }
 
   public requireNumber(message?: string): this {
-    this.hasNoNumber("requireNumber")
+    this.hasNoNumber("requireNumber");
     this.hasNumber.status = true;
     if (message !== undefined) {
       this.hasNumber.validationFunc.message  = message;
     }
 
-    this.rules.push(this.hasNumber.validationFunc)
+    this.rules.push(this.hasNumber.validationFunc);
     return this;
   }
 
@@ -198,7 +198,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
       this.hasSpecialCharacter.validationFunc.message  = message;
     }
 
-    this.rules.push(this.hasSpecialCharacter.validationFunc)
+    this.rules.push(this.hasSpecialCharacter.validationFunc);
     return this;
   }
 
@@ -208,7 +208,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
       this.noWhitespacesFlag.validationFunc.message  = message;
     }
 
-    this.rules.push(this.noWhitespacesFlag.validationFunc)
+    this.rules.push(this.noWhitespacesFlag.validationFunc);
     return this;
   }
 
@@ -222,7 +222,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
       this.noNumbersFlag.validationFunc.message  = message;
     }
 
-    this.rules.push(this.noNumbersFlag.validationFunc)
+    this.rules.push(this.noNumbersFlag.validationFunc);
     return this;
   }
 
@@ -235,7 +235,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
       this.noSpecialCharactersFlag.validationFunc.message  = message;
     }
 
-    this.rules.push(this.noSpecialCharactersFlag.validationFunc)
+    this.rules.push(this.noSpecialCharactersFlag.validationFunc);
     return this;
   }
 
@@ -250,7 +250,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
       this.onlyNumbersFlag.validationFunc.message  = message;
     }
 
-    this.rules.push(this.onlyNumbersFlag.validationFunc)
+    this.rules.push(this.onlyNumbersFlag.validationFunc);
     return this;
   }
 
@@ -260,7 +260,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
       this.noRepeatedCharactersFlag.validationFunc.message  = message;
     }
 
-    this.rules.push(this.noRepeatedCharactersFlag.validationFunc)
+    this.rules.push(this.noRepeatedCharactersFlag.validationFunc);
     return this;
   }
 
@@ -274,7 +274,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
       this.onlyCharactersFlag.validationFunc.message  = message;
     }
 
-    this.rules.push(this.onlyCharactersFlag.validationFunc)
+    this.rules.push(this.onlyCharactersFlag.validationFunc);
     return this;
   }
 

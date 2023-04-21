@@ -1,4 +1,3 @@
-import {Validator} from "./Validator";
 import {BaseValidator} from "./BaseValidator";
 import {ValidationError} from "../errors/ValidationError";
 import {buildErrorMsg} from "../utils/buildErrorMsg";
@@ -13,7 +12,7 @@ export class SchemaValidator implements IValidator<any> {
     private readonly schema: Schema;
     private readonly name: string | null = null;
     private isNullableFlag = false;
-    private notNullFlag = {status: false, message: '' };
+    private notNullFlag = {status: false, message: "" };
 
     constructor(schema: any, name?: string) {
         this.schema = schema;
@@ -96,7 +95,7 @@ export class SchemaValidator implements IValidator<any> {
                 return errorMessages;
             }
             if (this.notNullFlag.status) {
-                errorMessages['input'] = this.notNullFlag.message;
+                errorMessages["input"] = this.notNullFlag.message;
                 return errorMessages;
             }
             throw new ValidationError("input cannot be null or undefined", ["input cannot be null or undefined"]);

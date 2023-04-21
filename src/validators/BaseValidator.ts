@@ -4,7 +4,7 @@ import {baseMessages, commonMessages} from "../constants/messages";
 export class BaseValidator {
     public name: string | null;
     protected isNullableFlag = false;
-    protected notNullFlag = {status: false, message: '' };
+    protected notNullFlag = {status: false, message: "" };
 
     constructor(fieldName?: string) {
         this.name = fieldName || null;
@@ -19,6 +19,7 @@ export class BaseValidator {
     }
 
     public getErrorMessages(input: any): string[] {
+        this.handlePossibleNull(input);
         return [];
     }
 

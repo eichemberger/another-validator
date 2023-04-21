@@ -1,4 +1,3 @@
-import {commonMessages, numberMessages} from "../constants/messages";
 import {BaseValidator} from "./BaseValidator";
 import {IValidator} from "../types/IValidator";
 import {ValidationError} from "../errors/ValidationError";
@@ -38,7 +37,7 @@ export class NumberValidator extends BaseValidator implements IValidator<number>
         const errors: string[] = this.getErrorMessages(input);
 
         if (errors.length > 0) {
-            throw new ValidationError(buildErrorMsg(this.name), errors)
+            throw new ValidationError(buildErrorMsg(this.name), errors);
         }
     }
 

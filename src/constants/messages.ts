@@ -3,7 +3,7 @@ export const messages = {
     notBlank: "the value cannot be blank",
     isUrl: "the value is not a valid url",
     isEmail: "the value is not a valid email",
-    maxLength: `the value exceeds the maximum length`,
+    maxLength: "the value exceeds the maximum length",
     onlyNumbers: "the value must contain only numbers",
     minGreaterThanMax: "min cannot be greater than max",
     noNumbers: "the value must not contain any numbers",
@@ -23,7 +23,7 @@ export const messages = {
     maxLengthSmallerThanMin: "max length cannot be smaller than min length",
     noSpecialCharacters: "the value must not contain any special characters",
     noRepeatedCharacters: "the value must not contain any repeated characters",
-    hasSpecialCharacter: "the value must contain at least one special character",
+    hasSpecialCharacter: "the value must contain at least one special character"
 };
 
 export const numberMessages = {
@@ -31,7 +31,7 @@ export const numberMessages = {
     min: "the value does not meet the minimum value",
     defaultMessageForError: "the number is not valid",
     minGreaterThanMax: "min cannot be greater than max",
-    maxSmallerThanMin: "max cannot be smaller than min",
+    maxSmallerThanMin: "max cannot be smaller than min"
 };
 
 export const arrayMessages = {
@@ -39,16 +39,16 @@ export const arrayMessages = {
     max: "the array exceeds the maximum length",
     defaultMessageForError: "the array is not valid",
     min: "the array does not meet the minimum length",
-    noDuplicates: "the array must not contain any duplicates",
+    noDuplicates: "the array must not contain any duplicates"
 };
 
 export const commonMessages = {
     notNull: "the value cannot be null or undefined",
     maxSmallerThanMin: "max cannot be smaller than min",
     minGreaterThanMax: "min cannot be greater than max",
-    isNullError: "the value cannot be null or undefined",
+    isNullError: "the value cannot be null or undefined"
 };
 
 export const baseMessages = {
-    isNullableAndNotNull: "Cannot use notNull() and isNullable() together",
-}
+    isNullableAndNotNull: "Cannot use notNull() and isNullable() together"
+};

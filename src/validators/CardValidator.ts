@@ -33,7 +33,7 @@ export class CardValidator extends BaseValidator implements IValidator<string|{c
         switch (provider) {
             case CardProvider.Visa:
                 // Visa: 13 or 16 digits, starts with 4
-                return (cardLength === 13 || cardLength === 16) && cardNumber.startsWith('4');
+                return (cardLength === 13 || cardLength === 16) && cardNumber.startsWith("4");
             case CardProvider.MasterCard:
                 // MasterCard: 16 digits, starts with 51-55 or 2221-2720
                 return cardLength === 16 && (/^5[1-5]/.test(cardNumber) || /^2[2-7]/.test(cardNumber));
@@ -60,11 +60,11 @@ export class CardValidator extends BaseValidator implements IValidator<string|{c
         const errors: string[] = [];
 
         if (!this.checkLuhn(cardNumber)) {
-            errors.push('Invalid card number');
+            errors.push("Invalid card number");
         }
 
         if (provider && !this.checkCardProvider(cardNumber, provider)) {
-            errors.push('Invalid card number for provider ${provider}');
+            errors.push(`Invalid card number for provider ${provider}`);
         }
 
         return errors;
