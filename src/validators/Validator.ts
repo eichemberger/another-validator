@@ -48,7 +48,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
   private hasSpecialCharacter = buildValidation(messages.hasSpecialCharacter, (input) => SPECIAL_CHAR_REGEX.test(input));
   private minLengthFlag = buildValidation(messages.minLength, (input) => input.length < this.minLengthFlag.value, 0)
   private maxLengthFlag = buildValidation(messages.maxLength, (input) => input.length > this.maxLengthFlag.value, Infinity);
-  private noRepeatedCharactersFlag = buildValidation(messages.noRepeatedCharacters, (input) => !this._hasRepeatedChars(input));
+  private noRepeatedCharactersFlag = buildValidation(messages.noRepeatedCharacters, (input) => !this.hasRepeatedChars(input));
   private noSpecialCharactersFlag = buildValidation(messages.noSpecialCharacters, (input) => NO_SPECIAL_CHARS_REGEX.test(input));
   private fixedLengthFlag = buildValidation(messages.fixedLength, (input) => input.length === this.fixedLengthFlag.value, 0)
 
@@ -73,7 +73,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
   }
 
   public fixedLength(length: number, message?: string): this {
-    this._haxMinOrMax();
+    this.haxMinOrMax();
     if (length < 1) {
       throw new Error("fixed length cannot be less than 1");
     }
@@ -114,6 +114,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
   }
 
   public minLength(length: number, message?: string): this {
+    this.hasFixedLength("minLength");
     if (length > this.maxLengthFlag.value) {
       throw new Error(messages.minLengthGreaterThanMax);
     }
@@ -132,6 +133,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
   }
 
   public maxLength(length: number, message?: string): this {
+    this.hasFixedLength("maxLength");
     if (this.maxLengthFlag.value && length < this.minLengthFlag.value) {
       throw new Error("max length cannot be less than then min length");
     }
@@ -179,6 +181,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
   }
 
   public requireNumber(message?: string): this {
+    this.hasNoNumber("requireNumber")
     this.hasNumber.status = true;
     if (message !== undefined) {
       this.hasNumber.validationFunc.message  = message;
@@ -189,6 +192,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
   }
 
   public requireSpecialCharacter(message?: string): this {
+    this.hasNoSpecialCharacters("requireSpecialCharacter");
     this.hasSpecialCharacter.status = true;
     if (message !== null && message !== undefined) {
       this.hasSpecialCharacter.validationFunc.message  = message;
@@ -210,7 +214,8 @@ export class Validator extends BaseValidator implements IValidator<string> {
 
   public noNumbers(message?: string): this {
     const methodName = "noNumbers";
-    this._hasOnlyNumbers(methodName);
+    this.hasOnlyNumbers(methodName);
+    this.hasANumber(methodName);
 
     this.noNumbersFlag.status = true;
     if (message !== null && message !== undefined) {
@@ -223,8 +228,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
 
   public noSpecialCharacters(message?: string): this {
     const methodName = "noSpecialCharacters";
-    this._hasOnlyNumbers(methodName);
-    this._hasSpecialCharacters(methodName);
+    this.hasSpecialCharacters(methodName);
 
     this.noSpecialCharactersFlag.status = true;
     if (message !== null && message !== undefined) {
@@ -237,8 +241,9 @@ export class Validator extends BaseValidator implements IValidator<string> {
 
   public onlyNumbers(message?: string): this {
     const methodName = "onlyNumbers";
-    this._hasOnlyChars(methodName);
-    this._hasSpecialCharacters(methodName);
+    this.hasOnlyChars(methodName);
+    this.hasSpecialCharacters(methodName);
+    this.hasNoNumber(methodName);
 
     this.onlyNumbersFlag.status = true;
     if (message !== null && message !== undefined) {
@@ -247,13 +252,6 @@ export class Validator extends BaseValidator implements IValidator<string> {
 
     this.rules.push(this.onlyNumbersFlag.validationFunc)
     return this;
-  }
-
-  private _haxMinOrMax() {
-    if (this.minLengthFlag.status || this.maxLengthFlag.status) {
-      this._throwError("fixedLength", "minLength() or maxLength");
-    }
-    return false;
   }
 
   public noRepeatedCharacters(message?: string): this {
@@ -268,8 +266,8 @@ export class Validator extends BaseValidator implements IValidator<string> {
 
   public onlyCharacters(message?: string): this {
     const methodName = "onlyCharacters";
-    this._hasOnlyNumbers(methodName);
-    this._hasSpecialCharacters(methodName);
+    this.hasOnlyNumbers(methodName);
+    this.hasSpecialCharacters(methodName);
 
     this.onlyCharactersFlag.status = true;
     if (message !== null && message !== undefined) {
@@ -280,29 +278,61 @@ export class Validator extends BaseValidator implements IValidator<string> {
     return this;
   }
 
-  private _hasOnlyNumbers(methodName: string): void {
-    if (this.onlyNumbersFlag.status) {
-      this._throwError(methodName, this.onlyNumbers.name);
+  private haxMinOrMax() {
+    if (this.minLengthFlag.status || this.maxLengthFlag.status) {
+      this.throwError("fixedLength", "minLength() or maxLength");
+    }
+    return false;
+  }
+
+  private hasFixedLength(methodName: string): void {
+    if (this.fixedLengthFlag.status) {
+      this.throwError(methodName, this.fixedLength.name);
     }
   }
 
-  private _hasOnlyChars(methodName: string): void {
+  private hasANumber(methodName: string) {
+    if (this.hasNumber.status) {
+      this.throwError(methodName, this.requireNumber.name);
+    }
+    return false;
+  }
+
+  private hasOnlyNumbers(methodName: string): void {
     if (this.onlyNumbersFlag.status) {
-      this._throwError(methodName, this.onlyCharacters.name);
+      this.throwError(methodName, this.onlyNumbers.name);
     }
   }
 
-  private _hasSpecialCharacters(methodName: string): void {
+  private hasOnlyChars(methodName: string): void {
+    if (this.onlyNumbersFlag.status) {
+      this.throwError(methodName, this.onlyCharacters.name);
+    }
+  }
+
+  private hasSpecialCharacters(methodName: string): void {
     if (this.hasSpecialCharacter.status) {
-      this._throwError(methodName, this.requireSpecialCharacter.name);
+      this.throwError(methodName, this.requireSpecialCharacter.name);
     }
   }
 
-  private _throwError(func1Name: string, func2Name: string) {
+  private hasNoSpecialCharacters(methodName: string): void {
+    if (this.noSpecialCharactersFlag.status) {
+      this.throwError(methodName, this.noSpecialCharacters.name);
+    }
+  }
+
+  private hasNoNumber(methodName: string): void {
+    if (this.noNumbersFlag.status) {
+      this.throwError(methodName, this.noNumbers.name);
+    }
+  }
+
+  private throwError(func1Name: string, func2Name: string) {
     throw new Error(`${func1Name}() cannot be used with ${func2Name}()`);
   }
 
-  private _hasRepeatedChars(str: string): boolean {
+  private hasRepeatedChars(str: string): boolean {
     const hashTable: { [key: string]: boolean } = {};
     for (let i = 0; i < str.length; i++) {
       const char = str.charAt(i);

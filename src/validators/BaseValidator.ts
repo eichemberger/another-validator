@@ -1,5 +1,5 @@
 import {ValidationError} from "../errors/ValidationError";
-import {commonMessages} from "../constants/messages";
+import {baseMessages, commonMessages} from "../constants/messages";
 
 export class BaseValidator {
     public name: string | null;
@@ -11,15 +11,29 @@ export class BaseValidator {
     }
 
     public isNullable(): this {
+        this.cannotBeNull();
         this.isNullableFlag = true;
         return this;
     }
 
     public notNull(message?: string): this {
+        this.canBeNullable();
         this.notNullFlag.status = true;
         this.notNullFlag.message = message || commonMessages.notNull;
 
         return this;
+    }
+
+    private canBeNullable() {
+        if (this.isNullableFlag) {
+            throw new Error(baseMessages.isNullableAndNotNull);
+        }
+    }
+
+    private cannotBeNull() {
+        if (this.notNullFlag.status) {
+            throw new Error(baseMessages.isNullableAndNotNull);
+        }
     }
 
     protected handlePossibleNull(input: any): string[] {

@@ -1,4 +1,4 @@
-import {NumberValidator} from "../src";
+import {NumberValidator} from "../src/validators/NumberValidator";
 import {numberMessages} from "../src/constants/messages";
 
 describe('NumberValidator', () => {

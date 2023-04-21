@@ -1,6 +1,6 @@
 import {ValidationError} from "../src/errors/ValidationError";
 import {commonMessages} from "../src/constants/messages";
-import {BaseValidator} from "../src";
+import {BaseValidator} from "../src/validators/BaseValidator";
 
 class TestValidator extends BaseValidator {
     public testHandlePossibleNull(input: any) {
@@ -13,6 +13,16 @@ describe("BaseValidator", () => {
 
     beforeEach(() => {
         testValidator = new TestValidator();
+    });
+
+    test("should throw an error when isNullable and notNull are used together", () => {
+        testValidator.isNullable();
+        expect(() => testValidator.notNull()).toThrowError();
+    });
+
+    test("should throw an error when notNull and isNullable are used together", () => {
+        testValidator.notNull();
+        expect(() => testValidator.isNullable()).toThrowError();
     });
 
     test("should not throw an error for non-null inputs", () => {

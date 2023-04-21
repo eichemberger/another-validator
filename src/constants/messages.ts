@@ -48,3 +48,7 @@ export const commonMessages = {
     minGreaterThanMax: "min cannot be greater than max",
     isNullError: "the value cannot be null or undefined",
 };
+
+export const baseMessages = {
+    isNullableAndNotNull: "Cannot use notNull() and isNullable() together",
+}

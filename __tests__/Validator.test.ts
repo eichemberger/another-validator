@@ -1,4 +1,4 @@
-import {Validator} from "../src";
+import {Validator} from "../src/validators/Validator";
 import {commonMessages, messages} from "../src/constants/messages";
 import {ValidationError} from "../src/errors/ValidationError";
 import {buildErrorMsg} from "../src/utils/buildErrorMsg";
@@ -333,6 +333,64 @@ describe("Validator", () => {
 
         expect(() => validator.validate("ValidPassword1!")).not.toThrow();
     });
+
+  });
+
+  describe("validation for combination of rules", () => {
+
+    it("should throw error if onlyNumbers is used with noNumbers", () => {
+        validator.onlyNumbers();
+        expect(() => validator.noNumbers()).toThrow();
+    });
+
+    it("should throw error if noNumbers is used with onlyNumbers", () => {
+      validator.noNumbers();
+      expect(() => validator.onlyNumbers()).toThrow();
+    });
+
+    it("should throw error if hasNumber is used with noNumbers", () => {
+      validator.noNumbers();
+      expect(() => validator.requireNumber()).toThrow();
+    });
+
+    it("should throw error if hasSpecialCharacter is used with noSpecialCharacters", () => {
+        validator.requireSpecialCharacter();
+        expect(() => validator.noSpecialCharacters()).toThrow();
+    });
+
+    it("should throw error if noNumbers is used with requires a number", () => {
+       validator.noNumbers();
+       expect(() => validator.requireNumber()).toThrow();
+    });
+
+    it("should throw error if requireNumber is used with noNumbers", () => {
+      validator.requireNumber();
+      expect(() => validator.noNumbers()).toThrow();
+    });
+
+    describe("min and max with fixedLength", () => {
+        it("should throw error if min is used with fixedLength", () => {
+            validator.minLength(3);
+            expect(() => validator.fixedLength(3)).toThrow();
+        });
+
+        it("should throw error if max is used with fixedLength", () => {
+            validator.maxLength(3);
+            expect(() => validator.fixedLength(3)).toThrow();
+        });
+
+      it("should throw error if fixedLength is used with max", () => {
+        validator.fixedLength(3);
+        expect(() => validator.maxLength(3)).toThrow();
+      });
+
+      it("should throw error if fixedLength is used with min", () => {
+        validator.fixedLength(3);
+        expect(() => validator.minLength(3)).toThrow();
+      });
+    });
+
+
 
   });
 
