@@ -10,6 +10,18 @@ export class BaseValidator {
         this.name = fieldName || null;
     }
 
+    public getIsNullable(): boolean {
+        return this.isNullableFlag;
+    }
+
+    public getIsNotNull(): boolean {
+        return this.notNullFlag.status;
+    }
+
+    public getErrorMessages(input: any): string[] {
+        return [];
+    }
+
     public isNullable(): this {
         this.cannotBeNull();
         this.isNullableFlag = true;

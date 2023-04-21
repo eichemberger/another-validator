@@ -3,10 +3,10 @@ import {BaseValidator} from "./BaseValidator";
 import {ValidationError} from "../errors/ValidationError";
 import {buildErrorMsg} from "../utils/buildErrorMsg";
 import {IValidator} from "../types/IValidator";
-import {commonMessages} from "../constants/messages";
+import {baseMessages, commonMessages} from "../constants/messages";
 
 interface Schema {
-    [key: string]: Validator | SchemaValidator;
+    [key: string]: BaseValidator | SchemaValidator;
 }
 
 export class SchemaValidator implements IValidator<any> {
@@ -21,11 +21,17 @@ export class SchemaValidator implements IValidator<any> {
     }
 
     public isNullable(): this {
+        if (this.notNullFlag.status) {
+            throw new Error(baseMessages.isNullableAndNotNull);
+        }
         this.isNullableFlag = true;
         return this;
     }
 
     public notNull(message?: string): this {
+        if (this.isNullableFlag) {
+            throw new Error(baseMessages.isNullableAndNotNull);
+        }
         this.notNullFlag.status = true;
         this.notNullFlag.message = message || commonMessages.notNull;
         return this;
@@ -34,7 +40,7 @@ export class SchemaValidator implements IValidator<any> {
     public validate(input: any): void {
         const errors = this.getErrors(input);
 
-        if (errors) {
+        if (Object.keys(errors).length > 0) {
             throw new ValidationError(buildErrorMsg(this.name), errors);
         }
     }
@@ -85,15 +91,38 @@ export class SchemaValidator implements IValidator<any> {
     public getErrors(input: any): { [key: string]: any } {
         const errorMessages: { [key: string]: any } = {};
 
+        if (input == null) {
+            if (this.isNullableFlag) {
+                return errorMessages;
+            }
+            if (this.notNullFlag.status) {
+                errorMessages['input'] = this.notNullFlag.message;
+                return errorMessages;
+            }
+            throw new ValidationError("input cannot be null or undefined", ["input cannot be null or undefined"]);
+        }
+
         let errorIndex = 1;
         for (const key in this.schema) {
-            if (!this.schema.hasOwnProperty(key)) {
-               continue;
-            }
-
             const validatorOrSchema = this.schema[key];
             const inputValue = input[key];
             const fieldName = key || `field_${errorIndex++}`;
+
+            if (!input.hasOwnProperty(key) && this.schema[key] instanceof SchemaValidator) {
+                const validator = this.schema[key] as SchemaValidator;
+                if (!validator.isNullableFlag) {
+                    errorMessages[fieldName] = validator.getErrorMessages(inputValue);
+                }
+                continue;
+            }
+
+            if (!input.hasOwnProperty(key) && this.schema[key] instanceof BaseValidator) {
+                const validator = this.schema[key] as BaseValidator;
+                if (!validator.getIsNullable()) {
+                    errorMessages[fieldName] = validator.getErrorMessages(inputValue);
+                }
+                continue;
+            }
 
             if (inputValue !== undefined) {
                 let inputErrors: any[] = [];
@@ -119,9 +148,14 @@ export class SchemaValidator implements IValidator<any> {
     }
 
     assertIsValid(input: any): void {
+        const errors = this.getErrors(input);
+
+        if (Object.keys(errors).length > 0) {
+            throw new ValidationError(buildErrorMsg(this.name), errors);
+        }
     }
 
     isValid(input: any): boolean {
-        return false;
+        return this.getErrorMessages(input).length === 0;
     }
 }
