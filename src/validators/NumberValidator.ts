@@ -2,6 +2,7 @@ import {BaseValidator} from "./BaseValidator";
 import {IValidator} from "../types/IValidator";
 import {ValidationError} from "../errors/ValidationError";
 import {buildErrorMsg} from "../utils/buildErrorMsg";
+import {numberMessages} from "../constants/messages";
 
 export class NumberValidator extends BaseValidator implements IValidator<number> {
     private minFlag = {value: -Infinity, message: numberMessages.min, status: true};

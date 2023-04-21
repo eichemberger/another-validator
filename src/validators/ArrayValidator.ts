@@ -100,6 +100,7 @@ export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
         }
 
         for (let i = 0; i < input.length; i++) {
+            // @ts-ignore
             errors.push(...this.validator.getErrorMessages(input[i]));
         }
 
