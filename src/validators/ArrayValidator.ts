@@ -86,10 +86,10 @@ export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
 
         const errors: string[] = [];
 
-        if (this.minLengthFlag.status && input.length < this.minLengthFlag.value) {
+        if (this.minLengthFlag.status && input.length <= this.minLengthFlag.value) {
             errors.push(this.minLengthFlag.message);
         }
-        if (this.maxLengthFlag.status && input.length > this.maxLengthFlag.value) {
+        if (this.maxLengthFlag.status && input.length >= this.maxLengthFlag.value) {
             errors.push(this.maxLengthFlag.message);
         }
         if (this.notEmptyFlag.status && input.length === 0) {

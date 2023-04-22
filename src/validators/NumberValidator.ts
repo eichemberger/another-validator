@@ -2,11 +2,13 @@ import {BaseValidator} from "./BaseValidator";
 import {IValidator} from "../types/IValidator";
 import {ValidationError} from "../errors/ValidationError";
 import {buildErrorMsg} from "../utils/buildErrorMsg";
-import {numberMessages} from "../constants/messages";
+import {messages, numberMessages} from "../constants/messages";
+import {CustomValidator} from "../types/CustomValidator";
 
 export class NumberValidator extends BaseValidator implements IValidator<number> {
     private minFlag = {value: -Infinity, message: numberMessages.min, status: true};
     private maxFlag = {value: Infinity, message: numberMessages.max, status: true};
+    private rules: CustomValidator<number>[] = [];
 
     constructor(name?: string) {
         super(name);
@@ -30,6 +32,15 @@ export class NumberValidator extends BaseValidator implements IValidator<number>
         return this;
     }
 
+    public addRule(rule: (input: number) => boolean, message?: string): this {
+        const newRule = { func: rule, message: messages.customRuleMessage };
+        if (message !== null && message !== undefined) {
+            newRule.message = message;
+        }
+        this.rules.push(newRule);
+        return this;
+    }
+
     public isValid(input: number): boolean {
         return this.getErrorMessages(input).length === 0;
     }
@@ -50,12 +61,18 @@ export class NumberValidator extends BaseValidator implements IValidator<number>
 
         const errors: string[] = [];
 
-        if (this.minFlag.status && input < this.minFlag.value) {
+        if (this.minFlag.status && input <= this.minFlag.value) {
             errors.push(this.minFlag.message);
         }
-        if (this.maxFlag.status && input > this.maxFlag.value) {
+        if (this.maxFlag.status && input >= this.maxFlag.value) {
             errors.push(this.maxFlag.message);
         }
+
+        this.rules.forEach((rule) => {
+            if (!rule.func(input)) {
+                errors.push(rule.message);
+            }
+        });
 
         return errors;
     }

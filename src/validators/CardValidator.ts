@@ -3,8 +3,12 @@ import {BaseValidator} from "./BaseValidator";
 import {IValidator} from "../types/IValidator";
 import {ValidationError} from "../errors/ValidationError";
 import {buildErrorMsg} from "../utils/buildErrorMsg";
+import {CustomValidator} from "../types/CustomValidator";
+import {messages} from "../constants/messages";
 
 export class CardValidator extends BaseValidator implements IValidator<string|{cardNumber: string, provider?: CardProvider}> {
+    private rules: CustomValidator<string>[] = [];
+
     private checkLuhn(cardNumber: string): boolean {
         let sum = 0;
         let isEvenPosition = false;
@@ -25,6 +29,15 @@ export class CardValidator extends BaseValidator implements IValidator<string|{c
         }
 
         return sum % 10 === 0;
+    }
+
+    public addRule(rule: (input: string) => boolean, message?: string): this {
+        const newRule = { func: rule, message: messages.customRuleMessage };
+        if (message !== null && message !== undefined) {
+            newRule.message = message;
+        }
+        this.rules.push(newRule);
+        return this;
     }
 
     private checkCardProvider(cardNumber: string, provider: CardProvider): boolean {
@@ -66,6 +79,12 @@ export class CardValidator extends BaseValidator implements IValidator<string|{c
         if (provider && !this.checkCardProvider(cardNumber, provider)) {
             errors.push(`Invalid card number for provider ${provider}`);
         }
+
+        this.rules.forEach((rule) => {
+            if (!rule.func(cardNumber)) {
+                errors.push(rule.message);
+            }
+        });
 
         return errors;
     }

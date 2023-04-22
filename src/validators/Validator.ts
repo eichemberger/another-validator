@@ -127,7 +127,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
 
     this.minLengthFlag.value = length;
     this.minLengthFlag.status = true;
-    this.minLengthFlag.validationFunc.func = (input: string) => input.length > length;
+    this.minLengthFlag.validationFunc.func = (input: string) => input.length >= length;
     this.rules.push(this.minLengthFlag.validationFunc);
     return this;
   }
@@ -146,7 +146,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
 
     this.maxLengthFlag.value = length;
     this.maxLengthFlag.status = true;
-    this.maxLengthFlag.validationFunc.func = (input: string) => input.length < length;
+    this.maxLengthFlag.validationFunc.func = (input: string) => input.length <= length;
     this.rules.push(this.maxLengthFlag.validationFunc);
     return this;
   }
