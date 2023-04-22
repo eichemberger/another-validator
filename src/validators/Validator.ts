@@ -374,7 +374,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
     const errors = this.getErrorMessages(input);
 
     if (errors.length > 0) {
-      throw new ValidationError(buildErrorMsg(this.name), messages);
+      throw new ValidationError(buildErrorMsg(this.name), errors);
     }
   }
 
