@@ -8,7 +8,7 @@ import {BaseValidator} from "./BaseValidator";
 import {SchemaValidator} from "./SchemaValidator";
 
 export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
-    private comparatorFunc = (a: T, b: T) => a === b;
+    private comparatorFunc = (a: any, b: any) => a === b;
     private validator: Validator | NumberValidator | SchemaValidator;
     private minLengthFlag = {value: 0, message: arrayMessages.min, status: true};
     private maxLengthFlag = {value: Infinity, message: arrayMessages.max, status: true};
@@ -20,7 +20,7 @@ export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
         this.validator = validator;
     }
 
-    public comparator(func: (a: T, b: T) => boolean): this {
+    public comparator(func: (a: any, b: any) => boolean): this {
         this.comparatorFunc = func;
         return this;
     }
