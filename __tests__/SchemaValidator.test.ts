@@ -233,8 +233,79 @@ describe('SchemaValidator', () => {
             expect(() => nestedSchemaValidator.validate(obj)).toThrowError(ValidationError);
         });
 
+        it('should work with valid complex schemas', () => {
+            const colorsValidator = new Validator().onlyCharacters().notEmpty();
+            const productValidator = new SchemaValidator({
+                price: new NumberValidator().min(0),
+                sku: new Validator().fixedLength(10).onlyNumbers(),
+                availableColors: new ArrayValidator(colorsValidator).notEmpty()
+            });
+            const productsValidator = new ArrayValidator(productValidator).notEmpty();
+            const purchaseValidator = new SchemaValidator({
+                products: productsValidator,
+                user: new Validator().isEmail()
+            });
 
+            const obj = {
+                user: 'german@mail.com',
+                products: [
+                    {
+                        price: 10,
+                        sku: '1234567890',
+                        availableColors: ['red', 'blue']
+                    },
+                    {
+                        price: 20,
+                        sku: '1234567891',
+                        availableColors: ['red', 'blue']
+                    }
+                ]
+            };
+
+            expect(() => purchaseValidator.validate(obj)).not.toThrowError();
+        });
+
+        it('should validate invalid complex schemas', () => {
+            const colorsValidator = new Validator().onlyCharacters().notEmpty();
+            const productValidator = new SchemaValidator({
+                price: new NumberValidator().min(0),
+                sku: new Validator().fixedLength(10).onlyNumbers(),
+                availableColors: new ArrayValidator(colorsValidator).notEmpty()
+            });
+            const productsValidator = new ArrayValidator(productValidator)
+                .notEmpty()
+                .noDuplicates()
+                .comparator((a, b) => a.sku === b.sku);
+            const purchaseValidator = new SchemaValidator({
+                products: productsValidator,
+                user: new Validator().isEmail()
+            });
+
+            const obj = {
+                user: 'mail.com',
+                products: [
+                    {
+                        price: 10,
+                        sku: '1234567890',
+                        availableColors: ['red', 'blue']
+                    },
+                    {
+                        price: 20,
+                        sku: '1234567890',
+                        availableColors: ['red', 'blue']
+                    }
+                ]
+            };
+
+            expect(() => purchaseValidator.validate(obj)).toThrowError(ValidationError);
+            expect(purchaseValidator.getErrors(obj)).toEqual({
+                "products": [
+                    "the array must not contain any duplicates"
+                ],
+                "user": [
+                    "the value is not a valid email"
+                ]
+            });
+        });
     });
-
-
 });
