@@ -60,4 +60,53 @@ describe('CardValidator', () => {
         const cardNumber = '4532015112830367';
         expect(() => validator.validate(cardNumber)).toThrow(ValidationError);
     });
+
+    describe("validateExpiration", () => {
+        it("should throw a ValidationError for an expired expiration date", () => {
+            expect(() => CardValidator.validateExpiration("03/23")).toThrowError(
+                ValidationError
+            );
+        });
+
+        it("should throw a ValidationError for an invalid expiration date format", () => {
+            expect(() => CardValidator.validateExpiration("0423")).toThrowError(
+                ValidationError
+            );
+        });
+
+        it("should throw a ValidationError for an expiration date in the past", () => {
+            expect(() => CardValidator.validateExpiration("04/22")).toThrowError(
+                ValidationError
+            );
+        });
+
+        it("should throw a ValidationError for a month that is not a number", () => {
+            expect(() => CardValidator.validateExpiration("AA/25")).toThrowError(
+                ValidationError
+            );
+        });
+
+        it("should throw a ValidationError for a month that is less than 1", () => {
+            expect(() => CardValidator.validateExpiration("00/25")).toThrowError(
+                ValidationError
+            );
+        });
+
+        it("should throw a ValidationError for a month that is greater than 12", () => {
+            expect(() => CardValidator.validateExpiration("13/25")).toThrowError(
+                ValidationError
+            );
+        });
+
+        it("should throw a ValidationError for an expired month in the current year", () => {
+            expect(() => CardValidator.validateExpiration("04/22")).toThrowError(
+                ValidationError
+            );
+        });
+
+        it("should not throw an error for a valid expiration date", () => {
+            expect(() => CardValidator.validateExpiration("04/25")).not.toThrow();
+        });
+    });
+
 });

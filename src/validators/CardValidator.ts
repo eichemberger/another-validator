@@ -74,9 +74,30 @@ export class CardValidator extends BaseValidator implements IValidator<string|{c
         return this.getErrorMessages({cardNumber, provider}).length === 0;
     }
 
-    assertIsValid({cardNumber, provider} : {cardNumber: string, provider?: CardProvider}): void {
+    public assertIsValid({cardNumber, provider} : {cardNumber: string, provider?: CardProvider}): void {
         if (!this.isValid(cardNumber, provider)) {
             throw new ValidationError(buildErrorMsg("Credit-Card"), ["Invalid card"]);
+        }
+    }
+
+    public static validateExpiration(expiration: string): void {
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear() % 100;
+        const currentMonth = currentDate.getMonth() + 1;
+
+        const expirationParts = expiration.split("/");
+        const expirationMonth = parseInt(expirationParts[0], 10);
+        const expirationYear = parseInt(expirationParts[1], 10);
+
+        if (
+            isNaN(expirationMonth) ||
+            isNaN(expirationYear) ||
+            expirationMonth < 1 ||
+            expirationMonth > 12 ||
+            expirationYear < currentYear ||
+            (expirationYear === currentYear && expirationMonth < currentMonth)
+        ) {
+            throw new ValidationError(buildErrorMsg("Expiration"), ["Invalid expiration date"]);
         }
     }
 }
