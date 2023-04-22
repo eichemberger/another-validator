@@ -1,4 +1,4 @@
-# Another Validator [![npm version](https://badge.fury.io/js/another-validator.svg)](https://badge.fury.io/js/another-validator) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Another Validator [![npm version](https://badge.fury.io/js/another-validator.svg)](https://badge.fury.io/js/another-validator) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Coverage Status](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://badge.fury.io/js/another-validator)
 
 Whether you're building a simple form or a complex application, this validator is a valuable tool for validating user input and data.
 
@@ -73,7 +73,7 @@ schemaValidator.validate(someObject);
 
 ## Available methods
 
-Each validator has three common methods:
+Each validator has four common methods:
 
 - `isValid(inpput)` - Returns `true` if the input meets the requirements, otherwise returns `false`.
 - `validate(input)` - Throws an error if the input does not meet the requirements. The error object contains information about all the errors. You should use this method if you want to get detailed information about the errors.
