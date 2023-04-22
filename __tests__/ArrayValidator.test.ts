@@ -1,9 +1,9 @@
 import {arrayMessages, commonMessages} from "../src/constants/messages";
-import {Validator} from "../src";
-import {ArrayValidator} from "../src";
-import {NumberValidator} from "../src";
+import {Validator} from "../src/validators/Validator";
+import {ArrayValidator} from "../src/validators/ArrayValidator";
+import {NumberValidator} from "../src/validators/NumberValidator";
 import {ValidationError} from "../src/errors/ValidationError";
-import {SchemaValidator} from "../src";
+import {SchemaValidator} from "../src/validators/SchemaValidator";
 
 describe("ArrayValidator", () => {
     let validator: Validator | NumberValidator | SchemaValidator;
@@ -34,6 +34,12 @@ describe("ArrayValidator", () => {
 
     test("should throw error if minLength is greater than maxLength", () => {
         expect(() => arrayValidator.minLength(5).maxLength(4)).toThrow(commonMessages.maxSmallerThanMin);
+    });
+
+    test("should return an array if maxLength is not valid", () => {
+        const input = ["apple", "banana", "orange"];
+        arrayValidator.maxLength(2);
+        expect(arrayValidator.getErrorMessages(input)).toEqual([arrayMessages.max]);
     });
 
     test("should throw error if maxLength is smaller than minLength", () => {

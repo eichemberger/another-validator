@@ -1,5 +1,5 @@
 import {NumberValidator} from "../src/validators/NumberValidator";
-import {numberMessages} from "../src/constants/messages";
+import {commonMessages, numberMessages} from "../src/constants/messages";
 
 describe('NumberValidator', () => {
     let validator: NumberValidator;
@@ -47,6 +47,12 @@ describe('NumberValidator', () => {
     });
 
     describe('getErrorMessages()', () => {
+        it('should return an error if the value is null', () => {
+            validator.notNull();
+            // @ts-ignore
+            expect(validator.getErrorMessages(null)).toEqual([commonMessages.notNull]);
+        });
+
         it('should return an array of error messages', () => {
             validator.min(10).max(100);
             const expectedErrors = [numberMessages.min];
@@ -56,6 +62,42 @@ describe('NumberValidator', () => {
         it('should return an empty array if no errors', () => {
             validator.min(10).max(100).validate(50);
             expect(validator.getErrorMessages(15)).toEqual([]);
+        });
+    });
+
+    describe('addRule()', () => {
+        it('should add a custom rule', () => {
+            validator.addRule((input: number) => input > 10, 'Value must be greater than 10');
+            expect(validator['rules'].length).toEqual(1);
+        });
+
+        it('should validate custom rules', () => {
+            validator.addRule((input: number) => input > 10, 'Value must be greater than 10');
+            expect(() => validator.validate(5)).toThrowError();
+        });
+    });
+
+    describe('isValid()', () => {
+        it('should return true if the value is valid', () => {
+            validator.min(10).max(100);
+            expect(validator.isValid(50)).toEqual(true);
+        });
+
+        it('should return false if the value is invalid', () => {
+            validator.min(10).max(100);
+            expect(validator.isValid(500)).toEqual(false);
+        });
+    });
+
+    describe('assertIsValid()', () => {
+        it('should throw an InvalidInputError if validation fails', () => {
+            validator.min(10).max(100);
+            expect(() => validator.assertIsValid(500)).toThrowError();
+        });
+
+        it('should not throw an error if validation passes', () => {
+            validator.min(10).max(100).validate(50);
+            expect(() => validator.assertIsValid(50)).not.toThrow();
         });
     });
 });

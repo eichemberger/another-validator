@@ -1,6 +1,6 @@
 {
   "name": "another-validator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "German Eichemberger",
   "license": "MIT",
   "description": "just another-validator",
@@ -11,7 +11,6 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "prepare": "npm run build",
     "test": "jest"
   },
   "repository": {

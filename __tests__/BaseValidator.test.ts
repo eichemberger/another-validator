@@ -15,6 +15,10 @@ describe("BaseValidator", () => {
         testValidator = new TestValidator();
     });
 
+    test("dumb test for coverage", () => {
+        expect(testValidator.getErrorMessages({})).toEqual([]);
+    });
+
     test("should throw an error when isNullable and notNull are used together", () => {
         testValidator.isNullable();
         expect(() => testValidator.notNull()).toThrowError();

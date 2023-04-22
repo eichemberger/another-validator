@@ -20,6 +20,35 @@ describe('SchemaValidator', () => {
     });
 
     describe('notNull and isNullable', () => {
+        it('should throw if notNull is used with isNullable', () => {
+            schemaValidator.notNull();
+            expect(() => schemaValidator.isNullable()).toThrow(Error);
+        });
+
+        it('should throw if isNullable is used with notNullable', () => {
+            schemaValidator.isNullable();
+            expect(() => schemaValidator.notNull()).toThrow(Error);
+        });
+
+        it('return an empty Array if the value is null and can be nullable', () => {
+            schemaValidator.isNullable();
+            expect(schemaValidator.getErrorMessages(null)).toEqual([]);
+        });
+
+        it('should throw an error if a null value is passed', () => {
+            schemaValidator = new SchemaValidator({name: new Validator().minLength(3), age: new NumberValidator().min(18)});
+            expect(() => schemaValidator.getErrorMessages(null)).toThrow(ValidationError);
+        })
+
+        it('should throw an error if a null value is passed', () => {
+            expect(() => schemaValidator.getErrors(null)).toThrow(ValidationError);
+        })
+
+        it('return an empty Array if the value is undefined and can be nullable', () => {
+            schemaValidator.isNullable();
+            expect(schemaValidator.getErrorMessages(undefined)).toEqual([]);
+        });
+
         it('should throw an error when input is null and notNull is set', () => {
             schemaValidator.notNull();
             expect(() => schemaValidator.validate(null)).toThrow(ValidationError);
@@ -55,6 +84,16 @@ describe('SchemaValidator', () => {
             expect(() => schemaValidator.validate(undefined)).not.toThrow();
         });
     });
+
+    describe('assertIsValid', () => {
+        it('should not throw an error when input matches schema', () => {
+            expect(() => schemaValidator.assertIsValid({name: 'John', age: 25})).not.toThrow();
+        });
+
+        it('should throw an error when input does not matches schema', () => {
+            expect(() => schemaValidator.assertIsValid({name: 'John', age: 13})).toThrow();
+        });
+    })
 
     describe('validate', () => {
         it('should not throw an error when input matches schema', () => {
@@ -202,6 +241,21 @@ describe('SchemaValidator', () => {
             expect(() => nestedSchemaValidator.getErrors(obj)).not.toThrowError();
         });
 
+        it('should work if has unknown keys getErrorsMessages', () => {
+            const nestedSchema = {
+                name: new Validator().minLength(3),
+                age: new NumberValidator().min(18),
+                address: new SchemaValidator({
+                    street: new Validator().minLength(3),
+                    city: new Validator().minLength(3)
+                })
+            };
+            const nestedSchemaValidator = new SchemaValidator(nestedSchema);
+            const obj = {name: 'John', age: 19, address: {street: 'Mat', city: 'Low'}, testing: 'test'};
+
+            expect(() => nestedSchemaValidator.getErrorMessages(obj)).not.toThrowError();
+        });
+
         it('schemas should work when isNullable', () => {
             const nestedSchema = {
                 name: new Validator().minLength(3),
@@ -215,6 +269,7 @@ describe('SchemaValidator', () => {
             const obj = {name: 'John', age: 19, testing: 'test'};
 
             expect(() => nestedSchemaValidator.getErrors(obj)).not.toThrowError();
+            expect(nestedSchemaValidator.getErrorMessages(obj)).toEqual([]);
         });
 
         it('schemas throw an error when notNull and value is null', () => {

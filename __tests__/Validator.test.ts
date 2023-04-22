@@ -70,6 +70,11 @@ describe("Validator", () => {
       it("should throw error if max length is smaller than 1", () => {
         expect(() => validator.maxLength(0)).toThrow(messages.maxLengthSmallerThanOne);
       });
+
+      it("should throw error if max length is smaller than min", () => {
+        validator.minLength(5);
+        expect(() => validator.maxLength(3)).toThrow(messages.maxLengthSmallerThanMin);
+      });
     });
 
     describe("requireNumber", () => {
@@ -255,6 +260,10 @@ describe("Validator", () => {
       expect(() => validator.assertIsValid("UP1")).not.toThrow();
     });
 
+    it("should throw an error if fixed length is less than 1", () => {
+      expect(() => validator.fixedLength(0)).toThrow();
+    });
+
     it("should throw and error if min and max are used with fixedLength", () => {
       validator.minLength(3).maxLength(7)
         expect(() => validator.fixedLength(3)).toThrow();
@@ -343,6 +352,17 @@ describe("Validator", () => {
         expect(() => validator.noNumbers()).toThrow();
     });
 
+    it("should throw error if hasOnlyChars is used with hasOnlyNumbers", () => {
+      validator.onlyCharacters();
+      expect(() => validator.onlyNumbers()).toThrow();
+    });
+
+    it("should throw error if requireSpecialChars is used with noSpecialChars", () => {
+      validator.noSpecialCharacters();
+      expect(() => validator.requireSpecialCharacter()).toThrow();
+    });
+
+
     it("should throw error if noNumbers is used with onlyNumbers", () => {
       validator.noNumbers();
       expect(() => validator.onlyNumbers()).toThrow();
@@ -390,8 +410,40 @@ describe("Validator", () => {
       });
     });
 
-
-
   });
+
+  describe("messages validations", () => {
+
+    it("url: should set a message when passed by argument", () => {
+        validator.isUrl("custom message");
+        expect(validator.getErrorMessages("test")).toEqual(["custom message"]);
+    });
+
+    it("no numbers: should set a message when passed by argument", () => {
+      validator.noNumbers("custom message");
+      expect(validator.getErrorMessages("1")).toEqual(["custom message"]);
+    });
+
+    it("no special chars: should set a message when passed by argument", () => {
+      validator.noSpecialCharacters("custom message");
+      expect(validator.getErrorMessages("1$")).toEqual(["custom message"]);
+    });
+
+    it("only numbers: should set a message when passed by argument", () => {
+      validator.onlyNumbers("custom message");
+      expect(validator.getErrorMessages("1$")).toEqual(["custom message"]);
+    });
+
+    it("only chars: should set a message when passed by argument", () => {
+      validator.onlyCharacters("custom message");
+      expect(validator.getErrorMessages("1$")).toEqual(["custom message"]);
+    });
+
+    it("no repeated chars: should set a message when passed by argument", () => {
+      validator.noRepeatedCharacters("custom message");
+      expect(validator.getErrorMessages("1$1")).toEqual(["custom message"]);
+    });
+
+  })
 
 });

@@ -9,7 +9,64 @@ describe('CardValidator', () => {
 
     beforeEach(() => {
         validator = new CardValidator();
-    })
+    });
+
+    describe('addRule()', () => {
+        it('should add a rule to the validator', () => {
+            const rule = {func: (input:string) => input.length === 2, "message": "the value does not meet the requirements."};
+            validator.addRule(rule.func);
+            expect(validator['rules']).toContainEqual(rule);
+        });
+    });
+
+    describe('validate()', () => {
+        it('should throw an error for an invalid card number', () => {
+            const cardNumber = '1234567890123456';
+            expect(() => validator.validate(cardNumber)).toThrow(ValidationError);
+        });
+
+        it('should not throw an error for a valid card number', () => {
+            const cardNumber = '4532015112830366';
+            expect(() => validator.validate(cardNumber)).not.toThrow();
+        });
+
+        it('should work with custom rules', () => {
+            const rule = {func: (input:string) => input.length === 2, "message": "the value does not meet the requirements."};
+            validator.addRule(rule.func, rule.message);
+            expect(() => validator.validate('42')).not.toThrow();
+            expect(validator.getErrorMessages({cardNumber: '42'})).toEqual([]);
+        });
+
+        it('should work with custom rules and push the error to erros', () => {
+            const rule = {func: (input:string) => input.length === 1, "message": "the value does not meet the requirements."};
+            validator.addRule(rule.func, rule.message);
+            expect(() => validator.validate('42')).toThrow();
+            expect(validator.getErrorMessages({cardNumber: '42'})).toEqual(["the value does not meet the requirements."]);
+        });
+    });
+
+    describe('isValid', () => {
+        it('should return true for a valid card number', () => {
+            const cardNumber = '4532015112830366';
+            expect(validator.isValid(cardNumber)).toBe(true);
+        });
+
+        it('should return false for an invalid card number', () => {
+            const cardNumber = '1234567890123456';
+            expect(validator.isValid(cardNumber)).toBe(false);
+        });
+    });
+
+    describe('assertIsValid()', () => {
+        it('should not throw an error for a valid card number', () => {
+            const cardNumber = '4532015112830366';
+            expect(() => validator.assertIsValid({cardNumber})).not.toThrow();
+        });
+
+        it('should throw an error for an invalid card number', () => {
+            expect(() => validator.assertIsValid({cardNumber: '123'})).toThrow(ValidationError);
+        });
+    });
 
     it('should not throw an error for a valid Visa card number', () => {
         const cardNumber = '4532015112830366';
@@ -21,8 +78,26 @@ describe('CardValidator', () => {
         expect(() => validator.validate(cardNumber, CardProvider.Visa)).toThrow(ValidationError);
     });
 
+    it('should return an array with the error message', () => {
+        const cardNumber = '4532015112830367';
+        expect(validator.getErrorMessages({cardNumber, provider: CardProvider.Visa})).toEqual(["Invalid card number"]);
+    });
+
+    it('should return an array with the error message if the provider is unknown', () => {
+        const cardNumber = '4532015112830366';
+        // @ts-ignore
+        const arr = validator.getErrorMessages({cardNumber, provider: 'Mijitus'});
+
+        expect(arr).toEqual(["Invalid card number for provider Mijitus"]);
+    });
+
     it('should not throw an error for a valid MasterCard card number', () => {
         const cardNumber = '5500005555555559';
+        expect(() => validator.validate(cardNumber, CardProvider.MasterCard)).not.toThrow();
+    });
+
+    it('should not throw an error for a valid MasterCard card number', () => {
+        const cardNumber = '2720999999999996';
         expect(() => validator.validate(cardNumber, CardProvider.MasterCard)).not.toThrow();
     });
 
@@ -43,6 +118,21 @@ describe('CardValidator', () => {
 
     it('should not throw an error for a valid Discover card number', () => {
         const cardNumber = '6011514433546201';
+        expect(() => validator.validate(cardNumber, CardProvider.Discover)).not.toThrow();
+    });
+
+    it('should not throw an error for a valid Discover card number', () => {
+        const cardNumber = '6221265407526325';
+        expect(() => validator.validate(cardNumber, CardProvider.Discover)).not.toThrow();
+    });
+
+    it('should not throw an error for a valid Discover card number', () => {
+        const cardNumber = '6444557143804342';
+        expect(() => validator.validate(cardNumber, CardProvider.Discover)).not.toThrow();
+    });
+
+    it('should not throw an error for a valid Discover card number', () => {
+        const cardNumber = '6554432752066615';
         expect(() => validator.validate(cardNumber, CardProvider.Discover)).not.toThrow();
     });
 
