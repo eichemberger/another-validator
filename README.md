@@ -1,4 +1,4 @@
-# Another Validator
+# Another Validator [![npm version](https://badge.fury.io/js/another-validator.svg)](https://badge.fury.io/js/another-validator) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Whether you're building a simple form or a complex application, this validator is a valuable tool for validating user input and data.
 
@@ -8,12 +8,6 @@ Whether you're building a simple form or a complex application, this validator i
 - Extensible capabilities. You can add custom validation functions for specific use cases, allowing you to easily create validation rules that are tailored to your application's unique requirements.
 - Flexible configuration options, allowing you to specify which validation rules are required and which are optional.
 - Customizable error messages.
-
-## Installation
-
-```bash
-npm install another-validator
-```
 
 ## Usage
 
@@ -26,6 +20,7 @@ This package provides a set of validators that you can use to validate user inpu
 - `CardValidator` - Validates a credit card number (Uses Luhn's Algorithm). It can validate a number of different card types, including Visa, MasterCard, American Express and Discover.
 - `SchemaValidator` - Validates an object. It can validate multiple inputs at once. You can nest SchemaValidator for complex objects and arrays.
 - `ArrayValidator` - Validates that each element in an array meets the specified requirements.
+
 
 ### Add validations 
 
@@ -74,6 +69,7 @@ const schemaValidator = new SchemaValidator({
 
 schemaValidator.validate(someObject);
 ```
+
 
 ## Available methods
 
@@ -131,6 +127,8 @@ When setting a max or min these values are inclusive.
 | `assertIsValid` | Validates the card number and throws a ValidationError with specific error messages if it does not pass the validation rules. | `{cardNumber: string, provider?: CardProvider}`                   |
 | `validateExpiration` (static) | Validates the expiration date of a card. Throws a ValidationError if the expiration date is not valid. | `expiration: string`                                              |
 | `addRule` | Adds a custom validation rule. | `rule: (input: string) => boolean`, `message?: string` (optional) |
+
+If you are using TypeScript, you can use the `CardProvider` enum to specify the card provider
 
 Providers: 
 

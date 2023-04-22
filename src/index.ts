@@ -4,3 +4,4 @@ export { NumberValidator } from "./validators/NumberValidator";
 export { SchemaValidator } from "./validators/SchemaValidator";
 export { Validator } from "./validators/Validator";
 export { CardValidator } from "./validators/CardValidator";
+export { CardProvider } from "./constants/CardProvider";
