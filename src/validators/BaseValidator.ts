@@ -14,10 +14,6 @@ export class BaseValidator {
         return this.isNullableFlag;
     }
 
-    public getIsNotNull(): boolean {
-        return this.notNullFlag.status;
-    }
-
     public getErrorMessages(input: any): string[] {
         this.handlePossibleNull(input);
         return [];

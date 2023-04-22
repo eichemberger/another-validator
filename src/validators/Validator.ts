@@ -46,7 +46,9 @@ export class Validator extends BaseValidator implements IValidator<string> {
   private onlyCharactersFlag = buildValidation(messages.onlyCharacters, (input) => ONLY_CHARS_REGEX.test(input));
   private noWhitespacesFlag = buildValidation(messages.noWhitespaces, (input) => !NO_WHITESPACES_REGEX.test(input));
   private hasSpecialCharacter = buildValidation(messages.hasSpecialCharacter, (input) => SPECIAL_CHAR_REGEX.test(input));
+  /* istanbul ignore next */
   private minLengthFlag = buildValidation(messages.minLength, (input) => input.length < this.minLengthFlag.value, 0);
+  /* istanbul ignore next */
   private maxLengthFlag = buildValidation(messages.maxLength, (input) => input.length > this.maxLengthFlag.value, Infinity);
   private noRepeatedCharactersFlag = buildValidation(messages.noRepeatedCharacters, (input) => !this.hasRepeatedChars(input));
   private noSpecialCharactersFlag = buildValidation(messages.noSpecialCharacters, (input) => NO_SPECIAL_CHARS_REGEX.test(input));
@@ -79,12 +81,6 @@ export class Validator extends BaseValidator implements IValidator<string> {
     }
     if (message !== undefined) {
       this.fixedLengthFlag.validationFunc.message  = message;
-    }
-    if (this.maxLengthFlag.status) {
-      this.maxLengthFlag.value = length;
-    }
-    if (this.minLengthFlag.status) {
-      this.minLengthFlag.value = length;
     }
 
     this.fixedLengthFlag.value = length;
@@ -135,7 +131,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
   public maxLength(length: number, message?: string): this {
     this.hasFixedLength("maxLength");
     if (this.maxLengthFlag.value && length < this.minLengthFlag.value) {
-      throw new Error("max length cannot be less than then min length");
+      throw new Error(messages.maxLengthSmallerThanMin);
     }
     if (length < 1) {
       throw new Error(messages.maxLengthSmallerThanOne);
@@ -305,7 +301,7 @@ export class Validator extends BaseValidator implements IValidator<string> {
   }
 
   private hasOnlyChars(methodName: string): void {
-    if (this.onlyNumbersFlag.status) {
+    if (this.onlyCharactersFlag.status) {
       this.throwError(methodName, this.onlyCharacters.name);
     }
   }

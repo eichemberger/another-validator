@@ -60,10 +60,6 @@ export class SchemaValidator implements IValidator<any> {
         }
 
         for (const key in this.schema) {
-            if (!this.schema.hasOwnProperty(key)) {
-                continue;
-            }
-
             const validatorOrSchema = this.schema[key];
             const inputValue = input[key];
 
@@ -101,11 +97,10 @@ export class SchemaValidator implements IValidator<any> {
             throw new ValidationError("input cannot be null or undefined", ["input cannot be null or undefined"]);
         }
 
-        let errorIndex = 1;
         for (const key in this.schema) {
             const validatorOrSchema = this.schema[key];
             const inputValue = input[key];
-            const fieldName = key || `field_${errorIndex++}`;
+            const fieldName = key;
 
             if (!input.hasOwnProperty(key) && this.schema[key] instanceof SchemaValidator) {
                 const validator = this.schema[key] as SchemaValidator;

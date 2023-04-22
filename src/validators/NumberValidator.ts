@@ -78,7 +78,10 @@ export class NumberValidator extends BaseValidator implements IValidator<number>
     }
 
     public assertIsValid(input: number) {
-        this.validate(input);
+        const errors = this.getErrorMessages(input);
+        if (!this.isValid(input)) {
+            throw new ValidationError(buildErrorMsg(this.name), errors);
+        }
     }
 
 }
