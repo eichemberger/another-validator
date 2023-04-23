@@ -8,6 +8,9 @@ import {CustomValidator} from "../types/CustomValidator";
 export class NumberValidator extends BaseValidator implements IValidator<number> {
     private minFlag = {value: -Infinity, message: numberMessages.min, status: true};
     private maxFlag = {value: Infinity, message: numberMessages.max, status: true};
+    private isPositiveFlag = false;
+    private isNonNegativeFlag = false;
+    private isNegativeFlag = false;
     private rules: CustomValidator<number>[] = [];
 
     constructor(name?: string) {
@@ -29,6 +32,33 @@ export class NumberValidator extends BaseValidator implements IValidator<number>
         }
         this.maxFlag.value = value;
         this.maxFlag.message = message || numberMessages.max;
+        return this;
+    }
+
+    public isPositive(message?: string): this {
+        if (this.isNegativeFlag) {
+            throw new Error(numberMessages.isPositiveAndIsNegative);
+        }
+        this.isPositiveFlag = true;
+        this.rules.push({func: (input: number) => input > 0, message: message || numberMessages.isPositive});
+        return this;
+    }
+
+    public isNonNegative(message?: string): this {
+        if (this.isNegativeFlag) {
+            throw new Error(numberMessages.isNegativeAndNonNegative);
+        }
+        this.isNonNegativeFlag = true;
+        this.rules.push({func: (input: number) => input >= 0, message: message || numberMessages.isNonNegative});
+        return this;
+    }
+
+    public isNegative(message?: string): this {
+        if (this.isPositiveFlag || this.isNonNegativeFlag) {
+            throw new Error(numberMessages.isNegativeAndIsPositiveOrNonNegative);
+        }
+        this.isNegativeFlag = true;
+        this.rules.push({func: (input: number) => input < 0, message: message || numberMessages.isNegative});
         return this;
     }
 

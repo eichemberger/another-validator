@@ -100,4 +100,116 @@ describe('NumberValidator', () => {
             expect(() => validator.assertIsValid(50)).not.toThrow();
         });
     });
+
+    describe("isNegative", () => {
+        it("should pass if input is negative", () => {
+            const validator = new NumberValidator();
+            validator.isNegative();
+            expect(validator.isValid(-1)).toBe(true);
+        });
+
+        it("should fail if input is zero", () => {
+            const validator = new NumberValidator();
+            validator.isNegative();
+            expect(validator.isValid(0)).toBe(false);
+        });
+
+        it("should fail if input is positive", () => {
+            const validator = new NumberValidator();
+            validator.isNegative();
+            expect(validator.isValid(1)).toBe(false);
+        });
+
+        it("should use custom message if provided", () => {
+            const validator = new NumberValidator();
+            validator.isNegative("Input must be negative");
+            expect(validator.getErrorMessages(1)).toContain("Input must be negative");
+        });
+
+        it("should throw an error if isPositive or isNonNegative have been called", () => {
+            const validator = new NumberValidator();
+            validator.isPositive();
+            expect(() => validator.isNegative()).toThrowError(
+                numberMessages.isNegativeAndIsPositiveOrNonNegative
+            );
+        });
+
+        it("should throw an error if isPositive or isNonNegative have been called", () => {
+            const validator = new NumberValidator();
+            validator.isNegative();
+            expect(() => validator.isPositive()).toThrowError(
+                numberMessages.isPositiveAndIsNegative
+            );
+        });
+
+        it("should throw an error if isPositive or isNonNegative have been called", () => {
+            const validator = new NumberValidator();
+            validator.isNegative();
+            expect(() => validator.isNonNegative()).toThrowError(
+                numberMessages.isNegativeAndNonNegative
+            );
+        });
+    });
+
+    describe("isPositive", () => {
+        it("should pass if input is positive", () => {
+            const validator = new NumberValidator();
+            validator.isPositive();
+            expect(validator.isValid(1)).toBe(true);
+        });
+
+        it("should fail if input is zero", () => {
+            const validator = new NumberValidator();
+            validator.isPositive();
+            expect(validator.isValid(0)).toBe(false);
+        });
+
+        it("should fail if input is negative", () => {
+            const validator = new NumberValidator();
+            validator.isPositive();
+            expect(validator.isValid(-1)).toBe(false);
+        });
+
+        it("should use custom message if provided", () => {
+            const validator = new NumberValidator();
+            validator.isPositive("Input must be positive");
+            expect(validator.getErrorMessages(-1)).toContain("Input must be positive");
+        });
+
+        it("should throw an error if isNegative or isPositive have been called", () => {
+            const validator = new NumberValidator();
+            validator.isPositive();
+            expect(() => validator.isNegative()).toThrowError(
+                numberMessages.isNegativeAndIsPositiveOrNonNegative
+            );
+        });
+    });
+
+    describe("isNonNegative", () => {
+        it("should pass if input is zero", () => {
+            const validator = new NumberValidator();
+            validator.isNonNegative();
+            expect(validator.isValid(0)).toBe(true);
+        });
+
+        it("should pass if input is positive", () => {
+            const validator = new NumberValidator();
+            validator.isNonNegative();
+            expect(validator.isValid(1)).toBe(true);
+        });
+
+        it("should fail if input is negative", () => {
+            const validator = new NumberValidator();
+            validator.isNonNegative();
+            expect(validator.isValid(-1)).toBe(false);
+        });
+
+        it("should use custom message if provided", () => {
+            const validator = new NumberValidator();
+            validator.isNonNegative("Input must be non-negative");
+            expect(validator.getErrorMessages(-1)).toContain(
+                "Input must be non-negative"
+            );
+        });
+    });
 });

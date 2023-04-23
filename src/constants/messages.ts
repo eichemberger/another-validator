@@ -27,11 +27,17 @@ export const messages = {
 };
 
 export const numberMessages = {
+    isPositive: "the value must be positive",
+    isNegative: "the value must be negative",
     max: "the value exceeds the maximum value",
+    isNonNegative: "the value must be non-negative",
     min: "the value does not meet the minimum value",
     defaultMessageForError: "the number is not valid",
     minGreaterThanMax: "min cannot be greater than max",
-    maxSmallerThanMin: "max cannot be smaller than min"
+    maxSmallerThanMin: "max cannot be smaller than min",
+    isPositiveAndIsNegative: "Cannot use isPositive() and isNegative() together",
+    isNegativeAndNonNegative: "Cannot use isNegative() and isNonNegative() together",
+    isNegativeAndIsPositiveOrNonNegative: "Cannot use isNegative() and isPositive() or isNonNegative() together"
 };
 
 export const arrayMessages = {

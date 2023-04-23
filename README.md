@@ -30,6 +30,7 @@ If you have specific requirements for your application, you can add custom valid
 
 Example: 
 ```js
+// If no error messages are provided, the default error messages are used
 const passwordValidator = new Validator()
   .minLength(5)
   .maxLength(10)
@@ -109,11 +110,14 @@ When setting a max or min these values are inclusive.
 
 ### NumberValidator
 
-| Method | Description | Parameters                                                   |
-|--------|-------------|--------------------------------------------------------------|
-| `min` | Sets the minimum allowed value for the input. | `value: number`, `message?: string` (optional)               |
-| `max` | Sets the maximum allowed value for the input. | `value: number`, `message?: string` (optional)               |
-| `addRule` | Adds a custom validation rule. | `rule: (input: number) => boolean`, `message?: string` (optional) |
+| Method | Description                                                  | Parameters                                                   |
+|--------|--------------------------------------------------------------|--------------------------------------------------------------|
+| `min` | Sets the minimum allowed value for the input.                | `value: number`, `message?: string` (optional)               |
+| `max` | Sets the maximum allowed value for the input.                | `value: number`, `message?: string` (optional)               |
+| `addRule` | Adds a custom validation rule.                               | `rule: (input: number) => boolean`, `message?: string` (optional) |
+| `isNegative` | Checks if the input is negative                              | `message?: string` |
+| `isPositive` | Checks if the input is positive (bigger than 0)              | `message?: string` |
+| `isNonNegative` | Checks if the input is non-negative (i.e., zero or positive) | `message?: string` |
 
 When setting a max or min these values are inclusive.
 
@@ -143,6 +147,45 @@ Providers:
 |--------|-------------|------------|
 | `getErrors` | Returns an object containing error messages for the input object, with keys corresponding to the fields in the schema. | `input: any` |
 
+Usage example: 
+
+```js
+const validator = new SchemaValidator({
+    name: new Validator().notBlank().minLength(3),
+    payment: new SchemaValidator({
+        sku: new Validator().fixedLength(4).onlyNumbers(),
+        price: new NumberValidator().min(0, "cannot be 0 or less"),
+        cardNumber: new CardValidator(),
+    }),
+});
+
+const input = {
+    name: ' ',
+    payment: {
+        cardNumber: '1234',
+        sku: '123',
+        price: -1,
+    },
+}
+
+const errors = validator.getErrors(input);
+
+console.log(errors);
+/* If no error messages are provided, the default error messages are used:
+{
+  name: [
+    'the value cannot be empty',
+    'the value does not meet the minimum length'
+  ],
+  payment: {
+    sku: [ 'the value does not meet the fixed length' ],
+    price: [ 'cannot be 0 or less' ],
+    cardNumber: [ 'Invalid card number' ]
+  }
+}
+*/
+```
+
 ### ArrayValidator
 
 | Method | Description | Parameters |
@@ -155,6 +198,34 @@ Providers:
 
 If you use `noDuplicates` without setting a custom comparator function, the validator will use the `===` operator to check for duplicates.
 When setting a max or min these values are inclusive.
+
+Usage example: 
+
+```js
+import { ArrayValidator, CardValidator, NumberValidator, SchemaValidator, Validator } from "another-validator";
+
+const nameValidator = new Validator().minLength(2).maxLength(20).notEmpty();
+
+const validator = new ArrayValidator(nameValidator)
+    .minLength(2)
+    .maxLength(5)
+    .notEmpty()
+    .noDuplicates();
+
+
+const input = ["John", "Doe", "John", ""];
+
+const errors = validator.getErrorMessages(input);
+
+console.log(errors);
+/* If no error messages are provided, the default error messages are used:
+[
+  'the array must not contain any duplicates',
+  'the value does not meet the minimum length',
+  'the value cannot be empty'
+]
+*/
+```
 
 ### Common methods
 
