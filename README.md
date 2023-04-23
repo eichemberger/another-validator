@@ -82,6 +82,7 @@ Each validator has four common methods:
 - `getErrorMessages(input)` - Returns an array of error messages. It does not throw an error.
 
 `SchemaValidator` has a `getErrors(input)` method that returns an object with the error messages. The object keys are the names of the validators.
+You should use `getErros` if you want to get detailed information about the errors.
 
 ### Validator 
 
