@@ -81,7 +81,8 @@ Each validator has four common methods:
 - `assertIsValid(input)` - Also throws an error if the input does not meet the requirements. You should use this method if you don't care about the error details. The error object will only contain a message from the first error.
 - `getErrorMessages(input)` - Returns an array of error messages. It does not throw an error.
 
-`SchemaValidator` has a `getErrors(input)` method that returns an object with the error messages. The object keys are the names of the validators.
+`SchemaValidator` and `ArrayValidator` have a `getErrors(input)` method that returns an object with the error messages.
+
 You should use `getErros` if you want to get detailed information about the errors.
 
 ### Validator 

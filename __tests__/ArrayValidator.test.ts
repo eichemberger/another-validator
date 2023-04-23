@@ -151,4 +151,204 @@ describe("ArrayValidator", () => {
 
     })
 
+    describe("getErrors", () => {
+
+        test("should work if value is null and can be nullable", () => {
+            const validator = new Validator().notEmpty();
+            const arrayValidator = new ArrayValidator(validator).isNullable();
+            // @ts-ignore
+            expect(arrayValidator.getErrors(null)).toEqual([]);
+            // @ts-ignore
+            expect(arrayValidator.getErrors(undefined)).toEqual([]);
+        });
+
+        test("should throw error if the value is null", () => {
+            const validator = new Validator().notEmpty();
+            const arrayValidator = new ArrayValidator(validator);
+            // @ts-ignore
+            expect(() => arrayValidator.getErrors(null)).toThrowError();
+            // @ts-ignore
+            expect(() => arrayValidator.getErrors(undefined)).toThrowError();
+        });
+
+        test("should return error if value is null and cannot be null", () => {
+            const validator = new Validator().notEmpty();
+            const arrayValidator = new ArrayValidator(validator).notNull();
+            const response = [
+                [
+                    {
+                        "notNull": [
+                            "the value cannot be null or undefined"
+                        ]
+                    }
+                ]
+            ];
+            // @ts-ignore
+            expect(arrayValidator.getErrors(null)).toEqual(response);
+            // @ts-ignore
+            expect(arrayValidator.getErrors(undefined)).toEqual(response);
+        });
+
+        test("nested array with null values", () => {
+            const validator = new Validator().notEmpty();
+            const arrayValidator = new ArrayValidator(validator).notEmpty().notNull();
+            const nestedArrayValidator = new ArrayValidator(arrayValidator).notNull();
+
+            const input = [[null], ["hola"], null];
+            const errors = nestedArrayValidator.getErrors(input);
+            expect(errors).toEqual([
+                {
+                    "data": [
+                        null
+                    ],
+                    "errors": [
+                        [
+                            {
+                                "notNull": [
+                                    "the value cannot be null or undefined"
+                                ]
+                            }
+                        ]
+                    ]
+                },
+                [
+                    {
+                        "notNull": [
+                            "the value cannot be null or undefined"
+                        ]
+                    }
+                ]
+            ]);
+        })
+
+        test("should return errors for invalid input when nesting arrays and null values", () => {
+            const validator = new Validator().notEmpty();
+            const arrayValidator = new ArrayValidator(validator).notEmpty().notNull();
+            const nestedArrayValidator = new ArrayValidator(arrayValidator);
+
+            const input = [[null], ["hola"]];
+            const errors = nestedArrayValidator.getErrors(input);
+
+            expect(errors).toEqual([
+                {
+                    "data": [
+                        null
+                    ],
+                    "errors": [
+                        [
+                            {
+                                "notNull": [
+                                    "the value cannot be null or undefined"
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ]);
+        });
+
+        test("should return errors for invalid input when nesting arrays", () => {
+           const validator = new Validator().notEmpty();
+           const arrayValidator = new ArrayValidator(validator).notEmpty();
+           const nestedArrayValidator = new ArrayValidator(arrayValidator);
+
+            const input = [["", ""], ["apple", "banana"], ["orange"], []];
+            const errors = nestedArrayValidator.getErrors(input);
+
+            expect(errors).toEqual([
+                {
+                    "data": [
+                        "",
+                        ""
+                    ],
+                    "errors": [
+                        {
+                            "": [
+                                "the value cannot be empty"
+                            ]
+                        },
+                        {
+                            "": [
+                                "the value cannot be empty"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "data": [],
+                    "errors": [
+                        "the array cannot be empty"
+                    ]
+                }
+            ]);
+        });
+
+        test("nested arrays", () => {
+            const validator = new Validator().notEmpty();
+            const arrayValidator = new ArrayValidator(validator).notEmpty();
+            const nestedArrayValidator = new ArrayValidator(arrayValidator);
+
+            const input = [["", ""], ["apple", "banana"], ["orange"], []];
+            const errors = nestedArrayValidator.getErrors(input);
+            expect(errors).toEqual([
+                {
+                    "data": [
+                        "",
+                        ""
+                    ],
+                    "errors": [
+                        {
+                            "": [
+                                "the value cannot be empty"
+                            ]
+                        },
+                        {
+                            "": [
+                                "the value cannot be empty"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "data": [],
+                    "errors": [
+                        "the array cannot be empty"
+                    ]
+                }
+            ]);
+        });
+
+        test("should return errors for invalid input when using schemas", () => {
+            const schemaValidator = new SchemaValidator({
+                name: new Validator().notEmpty(),
+                age: new NumberValidator().isPositive()
+            });
+
+            const input = [{
+                name: "John",
+                age: 20
+            }, {
+                name: "Jane",
+                age: -1
+            }];
+
+            const arrayValidator = new ArrayValidator(schemaValidator);
+
+            const errors = arrayValidator.getErrors(input);
+            expect(errors).toEqual([
+                {
+                    "data": {
+                        "age": -1,
+                        "name": "Jane"
+                    },
+                    "errors": {
+                        "age": [
+                            "the value must be positive"
+                        ]
+                    }
+                }
+            ]);
+        });
+    })
+
 });

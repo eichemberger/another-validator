@@ -9,13 +9,13 @@ import {SchemaValidator} from "./SchemaValidator";
 
 export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
     private comparatorFunc = (a: any, b: any) => a === b;
-    private validator: Validator | NumberValidator | SchemaValidator;
+    private validator: Validator | NumberValidator | SchemaValidator | ArrayValidator<any>;
     private minLengthFlag = {value: 0, message: arrayMessages.min, status: true};
     private maxLengthFlag = {value: Infinity, message: arrayMessages.max, status: true};
     private notEmptyFlag = {value: false, message: arrayMessages.notEmpty, status: true};
     private noDuplicatesFlag = {value: false, message: arrayMessages.noDuplicates, status: true};
 
-    constructor(validator: Validator | NumberValidator | SchemaValidator) {
+    constructor(validator: Validator | NumberValidator | SchemaValidator | ArrayValidator<any>) {
         super();
         this.validator = validator;
     }
@@ -67,7 +67,7 @@ export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
         }
     }
 
-    private _hasDuplicates(input: T[]): boolean {
+    private hasDuplicates(input: T[]): boolean {
         for (let i = 0; i < input.length; i++) {
             for (let j = i + 1; j < input.length; j++) {
                 if (this.comparatorFunc(input[i], input[j])) {
@@ -95,7 +95,7 @@ export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
         if (this.notEmptyFlag.status && input.length === 0) {
             errors.push(this.notEmptyFlag.message);
         }
-        if (this.noDuplicatesFlag.status && this._hasDuplicates(input)) {
+        if (this.noDuplicatesFlag.status && this.hasDuplicates(input)) {
             errors.push(this.noDuplicatesFlag.message);
         }
 
@@ -115,8 +115,94 @@ export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
         return uniqueArray;
     }
 
-    assertIsValid(input: T[]): void {
+    public getErrors(input: T[]): {[key: string]: any} {
+        const errorsResponse: {[key: string]: any} = [];
+
+        if (this.isNullableFlag && (input === null || input === undefined)) {
+            return errorsResponse;
+        }
+
+        const possibleNullErrors = this.handleNullOrUndefined(input);
+        if (possibleNullErrors.length > 0) {
+            errorsResponse.push(possibleNullErrors);
+            return errorsResponse;
+        }
+
+        if (this.validator instanceof SchemaValidator) {
+            for (let i = 0; i < input.length; i++) {
+                // @ts-ignore
+                const error = this.validator.getErrors(input[i]);
+                if (Object.keys(error).length > 0) {
+                    errorsResponse.push({data: input[i], errors: error});
+                }
+            }
+            return errorsResponse;
+        }
+
+        if (this.validator instanceof ArrayValidator) {
+            for (let i = 0; i < input.length; i++) {
+                const possibleNullErrors = this.handleNullOrUndefined(input[i]);
+                if (possibleNullErrors.length > 0) {
+                    errorsResponse.push(possibleNullErrors);
+                    return errorsResponse;
+                }
+
+                // @ts-ignore
+                if (this.validator.notEmptyFlag.status && input[i].length === 0) {
+                    errorsResponse.push({data: input[i], errors: [this.validator.notEmptyFlag.message]});
+                    continue;
+                }
+
+                // @ts-ignore
+                const error = this.validator.getErrors(input[i]);
+                if (error.length > 0) {
+                    errorsResponse.push({data: input[i], errors: error});
+                }
+            }
+            return errorsResponse;
+        }
+
+        for (let i = 0; i < input.length; i++) {
+            const inputValue = input[i];
+
+            const possibleNullErrors = this.handleNullOrUndefined(inputValue);
+            if (possibleNullErrors.length > 0) {
+                errorsResponse.push(possibleNullErrors);
+                continue;
+            }
+
+            const error: {[key: string]: any}  = {};
+            // @ts-ignore
+            const errorMessages = this.validator.getErrorMessages(input[i]);
+            if (errorMessages.length > 0) {
+                const stringKey: string = this.stringify(inputValue);
+                error[stringKey] = errorMessages;
+
+                errorsResponse.push(error);
+            }
+
+        }
+
+        return errorsResponse;
+    }
+
+    private stringify(input: any): string {
+        return input.toString();
+    }
+
+    public assertIsValid(input: T[]): void {
         this.validate(input);
+    }
+
+    private handleNullOrUndefined(input: any): {[key: string]: any}[] {
+        const response: {[key: string]: any}[] = [];
+        if (this.notNullFlag.status && (input === null || input === undefined)) {
+            response.push({'notNull': [commonMessages.notNull]});
+        } else if (input === null || input === undefined) {
+            throw new Error(commonMessages.notNull);
+        }
+
+        return response;
     }
 
 
