@@ -124,7 +124,7 @@ export class SchemaValidator implements IValidator<any> {
                 if (validatorOrSchema instanceof BaseValidator) {
                     inputErrors = validatorOrSchema.getErrorMessages(inputValue);
                 } else if (validatorOrSchema instanceof SchemaValidator) {
-                    const nestedKeys = validatorOrSchema.getErrorMessages(inputValue);
+                    const nestedKeys = validatorOrSchema.getErrors(inputValue);
 
                     if (nestedKeys) {
                         errorMessages[fieldName] = {...nestedKeys};

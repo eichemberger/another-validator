@@ -163,8 +163,12 @@ describe('SchemaValidator', () => {
             const obj = {name: 'Jo', age: 13, address: {street: 'Ma', city: 'Lo'}};
             const expectedError = {
                 "address": {
-                    "0": "the value does not meet the minimum length",
-                    "1": "the value does not meet the minimum length"
+                    "city": [
+                        "the value does not meet the minimum length"
+                    ],
+                    "street": [
+                        "the value does not meet the minimum length"
+                    ]
                 },
                 "age": [
                     "the value does not meet the minimum value"
@@ -175,7 +179,7 @@ describe('SchemaValidator', () => {
                 "pets": [
                     "the value cannot be null or undefined"
                 ]
-            }
+            };
 
             expect(nestedSchemaValidator.getErrors(obj)).toEqual(expectedError);
         });
@@ -195,8 +199,12 @@ describe('SchemaValidator', () => {
             const obj = {name: 'Jo', age: 13, address: {street: 'Ma', city: 'Lo'}};
             const expectedError = {
                 "address": {
-                    "0": "the value does not meet the minimum length",
-                    "1": "the value does not meet the minimum length"
+                    "city": [
+                        "the value does not meet the minimum length"
+                    ],
+                    "street": [
+                        "the value does not meet the minimum length"
+                    ]
                 },
                 "age": [
                     "the value does not meet the minimum value"
