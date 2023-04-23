@@ -1,13 +1,14 @@
 {
   "name": "another-validator",
-  "version": "1.2.0",
-  "author": "German Eichemberger",
+  "version": "1.2.1",
+  "author": "German Eichemberger <geichemberger@proton.me>",
   "license": "MIT",
   "description": "just another-validator",
   "main": "dist/index.min.js",
   "types": "dist/index.d.ts",
+  "homepage": "https://github.com/eichemberger/another-validator",
   "files": [
-    "dist/"
+    "dist/**"
   ],
   "scripts": {
     "build": "rollup -c",
@@ -19,9 +20,14 @@
     "url": "https://github.com/eichemberger/another-validator.git"
   },
   "keywords": [
-    "password",
     "validator",
-    "password validator"
+    "validation",
+    "validate",
+    "sanitization",
+    "sanitize",
+    "sanitisation",
+    "sanitise",
+    "assert"
   ],
   "devDependencies": {
     "@types/jest": "^29.5.0",
