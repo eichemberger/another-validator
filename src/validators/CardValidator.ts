@@ -69,7 +69,13 @@ export class CardValidator extends BaseValidator implements IValidator<string|{c
         }
     }
 
-    public getErrorMessages({cardNumber, provider} : {cardNumber: string, provider?: CardProvider}): string[] {
+    public getErrorMessages(input : {cardNumber: string, provider?: CardProvider}): string[] {
+        if (typeof input === "string") { // for schema validation
+            input = {cardNumber: input};
+        }
+
+        const {cardNumber, provider} = input;
+
         const errors: string[] = [];
 
         if (!this.checkLuhn(cardNumber)) {

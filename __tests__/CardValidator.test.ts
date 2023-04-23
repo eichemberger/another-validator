@@ -96,6 +96,12 @@ describe('CardValidator', () => {
         expect(() => validator.validate(cardNumber, CardProvider.MasterCard)).not.toThrow();
     });
 
+    it('should work with a string as an input', () => {
+        const cardNumber = '5500005555555559';
+        // @ts-ignore
+        expect(() => validator.getErrorMessages(cardNumber)).not.toThrow();
+    });
+
     it('should not throw an error for a valid MasterCard card number', () => {
         const cardNumber = '2720999999999996';
         expect(() => validator.validate(cardNumber, CardProvider.MasterCard)).not.toThrow();
