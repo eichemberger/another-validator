@@ -141,14 +141,6 @@ export class SchemaValidator implements IValidator<any> {
         return errorMessages;
     }
 
-    assertIsValid(input: any): void {
-        const errors = this.getErrors(input);
-
-        if (Object.keys(errors).length > 0) {
-            throw new ValidationError(buildErrorMsg(this.name), errors);
-        }
-    }
-
     isValid(input: any): boolean {
         return this.getErrorMessages(input).length === 0;
     }

@@ -84,9 +84,9 @@ describe("ArrayValidator", () => {
         expect(arrayValidator.isValid(input)).toBe(true);
     });
 
-    test("should not throw ValidationError when using assertIsValid for valid input", () => {
+    test("should not throw ValidationError when using validate for valid input", () => {
         const input = ["apple", "banana", "orange"];
-        expect(() => arrayValidator.assertIsValid(input)).not.toThrow(ValidationError);
+        expect(() => arrayValidator.validate(input)).not.toThrow(ValidationError);
     });
 
     test("should work with NumberValidator", () => {

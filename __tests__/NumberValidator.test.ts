@@ -78,15 +78,15 @@ describe('NumberValidator', () => {
         });
     });
 
-    describe('assertIsValid()', () => {
+    describe('validate()', () => {
         it('should throw an InvalidInputError if validation fails', () => {
             validator.min(10).max(100);
-            expect(() => validator.assertIsValid(500)).toThrowError();
+            expect(() => validator.validate(500)).toThrowError();
         });
 
         it('should not throw an error if validation passes', () => {
-            validator.min(10).max(100).validate(50);
-            expect(() => validator.assertIsValid(50)).not.toThrow();
+            validator.min(10).max(100);
+            expect(() => validator.validate(50)).not.toThrow();
         });
     });
 

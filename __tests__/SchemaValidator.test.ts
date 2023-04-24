@@ -85,16 +85,6 @@ describe('SchemaValidator', () => {
         });
     });
 
-    describe('assertIsValid', () => {
-        it('should not throw an error when input matches schema', () => {
-            expect(() => schemaValidator.assertIsValid({name: 'John', age: 25})).not.toThrow();
-        });
-
-        it('should throw an error when input does not matches schema', () => {
-            expect(() => schemaValidator.assertIsValid({name: 'John', age: 13})).toThrow();
-        });
-    })
-
     describe('validate', () => {
         it('should not throw an error when input matches schema', () => {
             expect(() => schemaValidator.validate({name: 'John', age: 25})).not.toThrow();

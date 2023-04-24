@@ -78,7 +78,6 @@ Each validator has four common methods:
 
 - `isValid(inpput)` - Returns `true` if the input meets the requirements, otherwise returns `false`.
 - `validate(input)` - Throws an error if the input does not meet the requirements. The error object contains information about all the errors. You should use this method if you want to get detailed information about the errors.
-- `assertIsValid(input)` - Also throws an error if the input does not meet the requirements. You should use this method if you don't care about the error details. The error object will only contain a message from the first error.
 - `getErrorMessages(input)` - Returns an array of error messages. It does not throw an error.
 
 `SchemaValidator` and `ArrayValidator` have a `getErrors(input)` method that returns an object with the error messages.
@@ -130,7 +129,6 @@ When setting a max or min these values are inclusive.
 | `validate` | Validates the card number based on the Luhn algorithm and optionally checks if it matches the given provider. Throws a ValidationError if the card number is not valid. | `cardNumber: string`, `provider?: CardProvider` (optional)        |
 | `getErrorMessages` | Returns an array of error messages for the given card number based on the Luhn algorithm and optionally checks if it matches the given provider. | `{cardNumber: string, provider?: CardProvider}`                   |
 | `isValid` | Checks if the card number is valid based on the Luhn algorithm and optionally checks if it matches the given provider. | `cardNumber: string`, `provider?: CardProvider` (optional)        |
-| `assertIsValid` | Validates the card number and throws a ValidationError with specific error messages if it does not pass the validation rules. | `{cardNumber: string, provider?: CardProvider}`                   |
 | `validateExpiration` (static) | Validates the expiration date of a card. Throws a ValidationError if the expiration date is not valid. | `expiration: string`                                              |
 | `addRule` | Adds a custom validation rule. | `rule: (input: string) => boolean`, `message?: string` (optional) |
 
@@ -240,7 +238,6 @@ These methods are available for all validators.
 | `isValid` | Checks if the input is valid according to the validation rules. | `input: any`              |
 | `getErrorMessages` | Returns an array of error messages for the input based on the validation rules. | `input: any`              |
 | `validate` | Validates the input and throws a ValidationError if it does not pass the validation rules. | `input: any`                 |
-| `assertIsValid` | Validates the input and throws a ValidationError with a specific error message if it does not pass a validation rule. | `input: any`|
 
 ## TypeScript Support
 

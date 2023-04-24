@@ -30,6 +30,8 @@ const buildValidation = (message: string, validationFunc: RuleFunction<string>, 
 };
 
 export class Validator extends BaseValidator<string> {
+  private minLengthFlag = {value: 0, status: false};
+  private maxLengthFlag = {value: Infinity, status: false};
   private isUrlFlag = buildValidation(messages.isUrl, (input: string) => URL_REGEX.test(input));
   private notEmptyFlag = buildValidation(messages.notEmpty, (input) => !(input.length === 0));
   private isEmailFlag = buildValidation(messages.isEmail, (input) => EMAIL_REGEX.test(input));
@@ -42,10 +44,6 @@ export class Validator extends BaseValidator<string> {
   private onlyCharactersFlag = buildValidation(messages.onlyCharacters, (input) => ONLY_CHARS_REGEX.test(input));
   private noWhitespacesFlag = buildValidation(messages.noWhitespaces, (input) => !NO_WHITESPACES_REGEX.test(input));
   private hasSpecialCharacter = buildValidation(messages.hasSpecialCharacter, (input) => SPECIAL_CHAR_REGEX.test(input));
-  /* istanbul ignore next */
-  private minLengthFlag = buildValidation(messages.minLength, (input) => input.length < this.minLengthFlag.value, 0);
-  /* istanbul ignore next */
-  private maxLengthFlag = buildValidation(messages.maxLength, (input) => input.length > this.maxLengthFlag.value, Infinity);
   private noRepeatedCharactersFlag = buildValidation(messages.noRepeatedCharacters, (input) => !this.hasRepeatedChars(input));
   private noSpecialCharactersFlag = buildValidation(messages.noSpecialCharacters, (input) => NO_SPECIAL_CHARS_REGEX.test(input));
   private fixedLengthFlag = buildValidation(messages.fixedLength, (input) => input.length === this.fixedLengthFlag.value, 0);
@@ -128,14 +126,10 @@ export class Validator extends BaseValidator<string> {
     if (length < 1) {
       throw new Error(messages.maxLengthSmallerThanOne);
     }
-    if (message !== undefined) {
-      this.maxLengthFlag.validationFunc.message  = message;
-    }
 
     this.maxLengthFlag.value = length;
     this.maxLengthFlag.status = true;
-    this.maxLengthFlag.validationFunc.func = (input: string) => input.length <= length;
-    this.rules.push(this.maxLengthFlag.validationFunc);
+    this.rules.push({func: (input: string) => input.length <= length, message: message || messages.maxLength});
     return this;
   }
 

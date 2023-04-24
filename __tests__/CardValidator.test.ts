@@ -57,14 +57,14 @@ describe('CardValidator', () => {
         });
     });
 
-    describe('assertIsValid()', () => {
+    describe('validate()', () => {
         it('should not throw an error for a valid card number', () => {
             const cardNumber = '4532015112830366';
-            expect(() => validator.assertIsValid({cardNumber})).not.toThrow();
+            expect(() => validator.validate(cardNumber)).not.toThrow();
         });
 
         it('should throw an error for an invalid card number', () => {
-            expect(() => validator.assertIsValid({cardNumber: '123'})).toThrow(ValidationError);
+            expect(() => validator.validate('123')).toThrow(ValidationError);
         });
     });
 

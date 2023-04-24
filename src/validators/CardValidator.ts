@@ -95,12 +95,6 @@ export class CardValidator extends BaseValidator<string | {cardNumber: string, p
         return this.getErrorMessages({cardNumber, provider}).length === 0;
     }
 
-    public assertIsValid({cardNumber, provider} : {cardNumber: string, provider?: CardProvider}): void {
-        if (!this.isValid(cardNumber, provider)) {
-            throw new ValidationError(buildErrorMsg("Credit-Card"), ["Invalid card"]);
-        }
-    }
-
     public static validateExpiration(expiration: string): void {
         const currentDate = new Date();
         const currentYear = currentDate.getFullYear() % 100;

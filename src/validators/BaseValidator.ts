@@ -28,7 +28,7 @@ export abstract class BaseValidator<T> {
 
     public isValid(input: any): boolean {
         try {
-            this.assertIsValid(input);
+            this.validate(input);
             return true;
         } catch (e) {
             return false;
@@ -41,10 +41,6 @@ export abstract class BaseValidator<T> {
         if (errors.length > 0) {
             throw new ValidationError(buildErrorMsg(this.name), errors);
         }
-    }
-
-    public assertIsValid(input: any): void {
-        this.validate(input);
     }
 
     public getErrorMessages(input: T | T[]): string[] {

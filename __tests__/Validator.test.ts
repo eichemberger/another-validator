@@ -51,11 +51,11 @@ describe("Validator", () => {
     });
   })
 
-  describe("assertIsValid", () => {
+  describe("validate", () => {
     it("should throw error if password length is less than minLength", () => {
       validator.minLength(6);
       try {
-        validator.assertIsValid("short");
+        validator.validate("short");
       } catch (e: any) {
         expect(e).toEqual(throwError(validator, "short"));
         expect(e.errors[0]).toBe(messages.minLength);
@@ -84,7 +84,7 @@ describe("Validator", () => {
       it("should throw error if password does not contain a number", () => {
         validator.requireNumber();
         try {
-          validator.assertIsValid("short");
+          validator.validate("short");
         } catch (e: any) {
           expect(e).toEqual(throwError(validator, "short"));
           expect(e.errors[0]).toBe(messages.hasNumber);
@@ -104,7 +104,7 @@ describe("Validator", () => {
       it("should throw error if password does not contain a special character", () => {
         validator.requireSpecialCharacter();
         try {
-          validator.assertIsValid("short");
+          validator.validate("short");
         } catch (e: any) {
           expect(e).toEqual(throwError(validator, "short"));
           expect(e.errors[0]).toBe(messages.hasSpecialCharacter);
@@ -116,7 +116,7 @@ describe("Validator", () => {
       it("should throw error if password contains whitespace", () => {
         validator.noWhitespaces();
         try {
-          validator.assertIsValid("sho rt");
+          validator.validate("sho rt");
         } catch (e: any) {
           expect(e).toEqual(throwError(validator, "short"));
           expect(e.errors[0]).toBe(messages.noWhitespaces);
@@ -128,7 +128,7 @@ describe("Validator", () => {
       it("should throw error if password contains a number", () => {
         validator.noNumbers();
         try {
-          validator.assertIsValid("shor1t");
+          validator.validate("shor1t");
         } catch (e: any) {
           expect(e).toEqual(throwError(validator, "short"));
           expect(e.errors[0]).toBe(messages.noNumbers);
@@ -140,7 +140,7 @@ describe("Validator", () => {
       it("should throw error if password contains a special character", () => {
         validator.noSpecialCharacters();
         try {
-          validator.assertIsValid("sh@rt");
+          validator.validate("sh@rt");
         } catch (e: any) {
           expect(e).toEqual(throwError(validator, "short"));
           expect(e.errors[0]).toBe(messages.noSpecialCharacters);
@@ -179,7 +179,7 @@ describe("Validator", () => {
       it("should throw error if password contains non-numeric characters", () => {
         validator.onlyNumbers();
         try {
-          validator.assertIsValid("11t");
+          validator.validate("11t");
         } catch (e: any) {
           expect(e).toEqual(throwError(validator, "11t"));
           expect(e.errors[0]).toBe(messages.onlyNumbers);
@@ -191,7 +191,7 @@ describe("Validator", () => {
       it("should throw error if password contains repeated characters", () => {
         validator.noRepeatedCharacters();
         try {
-          validator.assertIsValid("nasa");
+          validator.validate("nasa");
         } catch (e: any) {
           expect(e).toEqual(throwError(validator, "short"));
           expect(e.errors[0]).toBe(messages.noRepeatedCharacters);
@@ -200,7 +200,7 @@ describe("Validator", () => {
 
       it("should not throw error if value does not contains any repeated characters", () => {
         validator.noRepeatedCharacters();
-        expect(() => validator.assertIsValid("repato")).not.toThrow();
+        expect(() => validator.validate("repato")).not.toThrow();
       });
     });
 
@@ -221,7 +221,7 @@ describe("Validator", () => {
         const message = "ese mail no es valido"
         validator.isEmail(message);
         try {
-          validator.assertIsValid("short");
+          validator.validate("short");
         } catch (e: any) {
           expect(e).toEqual(throwError(validator, "short"));
           expect(e.errors[0]).toBe(message);
@@ -230,7 +230,7 @@ describe("Validator", () => {
 
         it("should not throw error if is a valid email", () => {
           validator.isEmail();
-          expect(() => validator.assertIsValid("german@mail.com")).not.toThrow(messages.isEmail);
+          expect(() => validator.validate("german@mail.com")).not.toThrow(messages.isEmail);
         });
     });
 
@@ -238,7 +238,7 @@ describe("Validator", () => {
         it("should throw error if is not a valid url", () => {
           validator.isUrl();
           try {
-            validator.assertIsValid("short");
+            validator.validate("short");
           } catch (e: any) {
             expect(e).toEqual(throwError(validator, "short"));
             expect(e.errors[0]).toBe(messages.isUrl);
@@ -247,12 +247,12 @@ describe("Validator", () => {
 
         it("should not throw error if is a valid url", () => {
           validator.isUrl();
-          expect(() => validator.assertIsValid("https://google.com")).not.toThrow(messages.isUrl);
+          expect(() => validator.validate("https://google.com")).not.toThrow(messages.isUrl);
         });
 
       it("should not throw error if is a valid url without http or https", () => {
         validator.isUrl();
-        expect(() => validator.assertIsValid("google.com")).not.toThrow(messages.isUrl);
+        expect(() => validator.validate("google.com")).not.toThrow(messages.isUrl);
       });
     });
 
@@ -262,7 +262,7 @@ describe("Validator", () => {
           password.includes("test"), "custom message"
         );
         try {
-          validator.assertIsValid("t");
+          validator.validate("t");
         } catch (e: any) {
           expect(e).toEqual(throwError(validator, "t"));
           expect(e.errors[0]).toBe("custom message");
@@ -275,7 +275,7 @@ describe("Validator", () => {
     it("should throw error if password does not contain an uppercase letter", () => {
       validator.requireUppercase();
       try {
-        validator.assertIsValid("t");
+        validator.validate("t");
       } catch (e: any) {
         expect(e).toEqual(throwError(validator, "t"));
         expect(e.errors[0]).toBe(messages.hasUppercase);
@@ -285,7 +285,7 @@ describe("Validator", () => {
     it("should throw error if password does not contain a lowercase letter", () => {
       validator.requireLowercase();
       try {
-        validator.assertIsValid("T");
+        validator.validate("T");
       } catch (e: any) {
         expect(e).toEqual(throwError(validator, "T"));
         expect(e.errors[0]).toBe(messages.hasLowercase);
@@ -303,7 +303,7 @@ describe("Validator", () => {
 
     it("should not throw error with correct length", () => {
       validator.fixedLength(3);
-      expect(() => validator.assertIsValid("UP1")).not.toThrow();
+      expect(() => validator.validate("UP1")).not.toThrow();
     });
 
     it("should throw an error if fixed length is less than 1", () => {
