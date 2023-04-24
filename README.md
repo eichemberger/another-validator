@@ -17,7 +17,7 @@ This package provides a set of validators that you can use to validate user inpu
 
 - `Validator` - Validates a single input, such as a password or a username.
 - `NumberValidator` - Validates a number.
-- `CardValidator` - Validates a credit card number (Uses Luhn's Algorithm). It can validate a number of different card types, including Visa, MasterCard, American Express and Discover.
+- `CardValidator` - Validates a credit card number (Uses Luhn's Algorithm). It can validate a number of different card types, including Visa, MasterCard, American Express, Discover, etc.
 - `SchemaValidator` - Validates an object. It can validate multiple inputs at once. You can nest SchemaValidator for complex objects and arrays.
 - `ArrayValidator` - Validates that each element in an array meets the specified requirements.
 
@@ -74,15 +74,15 @@ schemaValidator.validate(someObject);
 
 ## Available methods
 
-Each validator has four common methods:
+Each validator has three common methods:
 
 - `isValid(inpput)` - Returns `true` if the input meets the requirements, otherwise returns `false`.
-- `validate(input)` - Throws an error if the input does not meet the requirements. The error object contains information about all the errors. You should use this method if you want to get detailed information about the errors.
+- `validate(input)` - Throws an error if the input does not meet the requirements. The error object contains information about all the errors.
 - `getErrorMessages(input)` - Returns an array of error messages. It does not throw an error.
 
 `SchemaValidator` and `ArrayValidator` have a `getErrors(input)` method that returns an object with the error messages.
 
-You should use `getErros` if you want to get detailed information about the errors.
+You should use `getErrors` if you want to get detailed information about the errors.
 
 ### Validator 
 
@@ -124,15 +124,17 @@ When setting a max or min these values are inclusive.
 
 ### CardValidator
 
-| Method | Description | Parameters                                                        |
-|--------|-------------|-------------------------------------------------------------------|
-| `validate` | Validates the card number based on the Luhn algorithm and optionally checks if it matches the given provider. Throws a ValidationError if the card number is not valid. | `cardNumber: string`, `provider?: CardProvider` (optional)        |
-| `getErrorMessages` | Returns an array of error messages for the given card number based on the Luhn algorithm and optionally checks if it matches the given provider. | `{cardNumber: string, provider?: CardProvider}`                   |
-| `isValid` | Checks if the card number is valid based on the Luhn algorithm and optionally checks if it matches the given provider. | `cardNumber: string`, `provider?: CardProvider` (optional)        |
-| `validateExpiration` (static) | Validates the expiration date of a card. Throws a ValidationError if the expiration date is not valid. | `expiration: string`                                              |
-| `addRule` | Adds a custom validation rule. | `rule: (input: string) => boolean`, `message?: string` (optional) |
+If it is used with SchemaValidator it will only validate the card number.
 
-If you are using TypeScript, you can use the `CardProvider` enum to specify the card provider
+| Method                 | Description                                                                                                                    | Parameters                                                                                                             |
+|------------------------|--------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| addRule                | Adds a custom rule to the list of rules                                                                                        | rule: (input: string) => boolean, message?: string                                                                     |
+| isCardProviderValid    | Checks if the card number is valid for the given card provider                                                                 | cardNumber: string, provider: CardProvider                                                                             |
+| validateExpiration     | Validates the expiration date of a credit card                                                                                 | expiration: string                                                                                                      |
+| validate               | Validates the credit card input based on the card number, provider, and expiration date. The date must have the format (MM/YY) | input: {cardNumber: string, provider?: CardProvider, expirationDate?: string} \| string                                |
+| getErrorMessages       | Returns an array of error messages based on the card number, provider, and expiration date                                     | input: {cardNumber: string, provider?: CardProvider, expirationDate?: string} \| string                                |
+
+If you are using TypeScript, you must use the `CardProvider` enum to specify the card provider
 
 Providers: 
 
@@ -140,6 +142,11 @@ Providers:
 - MasterCard
 - AmericanExpress
 - Discover
+- JBC
+- DinersClub
+- Maestro
+- UnionPay
+- TarjetaNaranja
 
 ### SchemaValidator
 
