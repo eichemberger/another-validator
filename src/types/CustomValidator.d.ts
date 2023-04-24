@@ -1,3 +1,3 @@
-export type CustomValidator<T> = {func: RuleFunction<T>, message: string};
+export type CustomValidator<T> = {func: (input: any) => boolean, message: string};
 
-export type RuleFunction<T> = (input: T) => boolean;
+export type RuleFunction<T> = (input: any) => boolean;

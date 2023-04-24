@@ -1,19 +1,15 @@
 import {Validator} from "./Validator";
 import {NumberValidator} from "./NumberValidator";
 import {arrayMessages, commonMessages} from "../constants/messages";
-import {ValidationError} from "../errors/ValidationError";
-import {buildErrorMsg} from "../utils/buildErrorMsg";
-import {IValidator} from "../types/IValidator";
 import {BaseValidator} from "./BaseValidator";
 import {SchemaValidator} from "./SchemaValidator";
 
-export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
+export class ArrayValidator<T> extends BaseValidator<T> {
     private comparatorFunc = (a: any, b: any) => a === b;
-    private validator: Validator | NumberValidator | SchemaValidator | ArrayValidator<any>;
+    private readonly validator: Validator | NumberValidator | SchemaValidator | ArrayValidator<any> | BaseValidator<any>;
     private minLengthFlag = {value: 0, message: arrayMessages.min, status: true};
     private maxLengthFlag = {value: Infinity, message: arrayMessages.max, status: true};
     private notEmptyFlag = {value: false, message: arrayMessages.notEmpty, status: true};
-    private noDuplicatesFlag = {value: false, message: arrayMessages.noDuplicates, status: true};
 
     constructor(validator: Validator | NumberValidator | SchemaValidator | ArrayValidator<any>) {
         super();
@@ -30,7 +26,7 @@ export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
             throw new Error(commonMessages.minGreaterThanMax);
         }
         this.minLengthFlag.value = value;
-        this.minLengthFlag.message = message || arrayMessages.min;
+        this.rules.push({message: message || arrayMessages.min, func: (input: T[]) => input.length >= value});
         return this;
     }
 
@@ -39,32 +35,18 @@ export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
             throw new Error(commonMessages.maxSmallerThanMin);
         }
         this.maxLengthFlag.value = value;
-        this.maxLengthFlag.message = message || arrayMessages.max;
+        this.rules.push({message: message || arrayMessages.max, func: (input: T[]) => input.length <= value});
         return this;
     }
 
     public notEmpty(message?: string): this {
-        this.notEmptyFlag.value = true;
-        this.notEmptyFlag.message = message || arrayMessages.notEmpty;
+        this.rules.push({message: message || arrayMessages.notEmpty, func: (input: T[]) => input.length > 0});
         return this;
     }
 
     public noDuplicates(message?: string): this {
-        this.noDuplicatesFlag.value = true;
-        this.noDuplicatesFlag.message = message || arrayMessages.noDuplicates;
+        this.rules.push({message: message || arrayMessages.noDuplicates, func: (input: T[]) => !this.hasDuplicates(input)});
         return this;
-    }
-
-    public isValid(input: T[]): boolean {
-        return this.getErrorMessages(input).length === 0;
-    }
-
-    public validate(input: T[]): void {
-        const errors: string[] = this.getErrorMessages(input);
-
-        if (errors.length > 0) {
-            throw new ValidationError(buildErrorMsg(this.name), errors);
-        }
     }
 
     private hasDuplicates(input: T[]): boolean {
@@ -79,28 +61,13 @@ export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
     }
 
     public getErrorMessages(input: T[]): string[] {
-        const nullError = this.handlePossibleNull(input);
-        if (nullError.length > 0) {
-            return nullError;
+        const errors = super.getErrorMessages(input);
+        if (input == null || input === undefined) {
+            return errors;
         }
 
-        const errors: string[] = [];
-
-        if (this.minLengthFlag.status && input.length <= this.minLengthFlag.value) {
-            errors.push(this.minLengthFlag.message);
-        }
-        if (this.maxLengthFlag.status && input.length >= this.maxLengthFlag.value) {
-            errors.push(this.maxLengthFlag.message);
-        }
-        if (this.notEmptyFlag.status && input.length === 0) {
-            errors.push(this.notEmptyFlag.message);
-        }
-        if (this.noDuplicatesFlag.status && this.hasDuplicates(input)) {
-            errors.push(this.noDuplicatesFlag.message);
-        }
-
+        // @ts-ignore
         for (let i = 0; i < input.length; i++) {
-            // @ts-ignore
             errors.push(...this.validator.getErrorMessages(input[i]));
         }
 
@@ -172,7 +139,6 @@ export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
             }
 
             const error: {[key: string]: any}  = {};
-            // @ts-ignore
             const errorMessages = this.validator.getErrorMessages(input[i]);
             if (errorMessages.length > 0) {
                 const stringKey: string = this.stringify(inputValue);
@@ -188,10 +154,6 @@ export class ArrayValidator<T> extends BaseValidator implements IValidator<T[]>{
 
     private stringify(input: any): string {
         return input.toString();
-    }
-
-    public assertIsValid(input: T[]): void {
-        this.validate(input);
     }
 
     private handleNullOrUndefined(input: any): {[key: string]: any}[] {

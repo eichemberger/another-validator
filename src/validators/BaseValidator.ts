@@ -1,31 +1,77 @@
 import {ValidationError} from "../errors/ValidationError";
-import {baseMessages, commonMessages} from "../constants/messages";
+import {baseMessages, commonMessages, messages} from "../constants/messages";
+import {CustomValidator} from "../types/CustomValidator";
+import {buildErrorMsg} from "../utils/buildErrorMsg";
 
-export class BaseValidator {
+export abstract class BaseValidator<T> {
     public name: string | null;
     protected isNullableFlag = false;
     protected notNullFlag = {status: false, message: "" };
+    protected rules: CustomValidator<T>[] = [];
 
     constructor(fieldName?: string) {
         this.name = fieldName || null;
+    }
+
+    public addRule(rule: (value: T) => boolean, message?: string): BaseValidator<T> {
+        const newRule = { func: rule, message: messages.customRuleMessage };
+        if (message !== null && message !== undefined) {
+            newRule.message = message;
+        }
+        this.rules.push(newRule);
+        return this;
     }
 
     public getIsNullable(): boolean {
         return this.isNullableFlag;
     }
 
-    public getErrorMessages(input: any): string[] {
-        this.handlePossibleNull(input);
-        return [];
+    public isValid(input: any): boolean {
+        try {
+            this.assertIsValid(input);
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
-    public isNullable(): this {
+    public validate(input: any): void {
+        const errors = this.getErrorMessages(input);
+
+        if (errors.length > 0) {
+            throw new ValidationError(buildErrorMsg(this.name), errors);
+        }
+    }
+
+    public assertIsValid(input: any): void {
+        this.validate(input);
+    }
+
+    public getErrorMessages(input: T | T[]): string[] {
+        const nullError = this.handlePossibleNull(input);
+        if (nullError !== null) {
+            return [nullError];
+        }
+
+        const errors: string[] = [];
+
+        this.rules.forEach((rule) => {
+            if (!rule.func(input)) {
+                errors.push(rule.message);
+            }
+        });
+
+        return errors;
+    }
+
+    // configure nullability
+    public isNullable() {
         this.cannotBeNull();
         this.isNullableFlag = true;
         return this;
     }
 
-    public notNull(message?: string): this {
+    public notNull(message?: string) {
         this.canBeNullable();
         this.notNullFlag.status = true;
         this.notNullFlag.message = message || commonMessages.notNull;
@@ -45,22 +91,19 @@ export class BaseValidator {
         }
     }
 
-    protected handlePossibleNull(input: any): string[] {
-        const errors: string[] = [];
-
+    protected handlePossibleNull(input: any): string | null {
         if (this.isNullableFlag && (input === null || input === undefined)) {
-            return errors;
+            return null;
         }
 
         if (input === null || input === undefined) {
             if (this.notNullFlag.status) {
-                errors.push(this.notNullFlag.message);
-                return errors;
+                return this.notNullFlag.message;
             }
 
             throw new ValidationError("input cannot be null or undefined", ["input cannot be null or undefined"]);
         }
 
-        return errors;
+        return null;
     }
 }

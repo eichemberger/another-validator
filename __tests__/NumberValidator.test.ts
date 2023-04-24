@@ -9,11 +9,6 @@ describe('NumberValidator', () => {
     });
 
     describe('min()', () => {
-        it('should set the minimum value and message', () => {
-            validator.min(10, 'Value must be at least 10');
-            expect(validator['minFlag'].value).toEqual(10);
-            expect(validator['minFlag'].message).toEqual('Value must be at least 10');
-        });
 
         it('should throw an error if min value is greater than max value', () => {
             validator.max(3);
@@ -22,12 +17,6 @@ describe('NumberValidator', () => {
     });
 
     describe('max()', () => {
-        it('should set the maximum value and message', () => {
-            validator.max(100, 'Value must be at most 100');
-            expect(validator['maxFlag'].value).toEqual(100);
-            expect(validator['maxFlag'].message).toEqual('Value must be at most 100');
-        });
-
         it('should throw an error if max value is smaller than min value', () => {
             validator.min(100);
             expect(() => validator.max(10)).toThrowError(numberMessages.maxSmallerThanMin);

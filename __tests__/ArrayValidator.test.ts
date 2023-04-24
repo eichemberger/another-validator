@@ -191,8 +191,8 @@ describe("ArrayValidator", () => {
 
         test("nested array with null values", () => {
             const validator = new Validator().notEmpty();
-            const arrayValidator = new ArrayValidator(validator).notEmpty().notNull();
-            const nestedArrayValidator = new ArrayValidator(arrayValidator).notNull();
+            const arrayValidator = new ArrayValidator<any>(validator).notEmpty().notNull();
+            const nestedArrayValidator = new ArrayValidator<any>(arrayValidator).notNull();
 
             const input = [[null], ["hola"], null];
             const errors = nestedArrayValidator.getErrors(input);

@@ -1,14 +1,10 @@
 import {CardProvider} from "../constants/CardProvider";
 import {BaseValidator} from "./BaseValidator";
-import {IValidator} from "../types/IValidator";
 import {ValidationError} from "../errors/ValidationError";
 import {buildErrorMsg} from "../utils/buildErrorMsg";
-import {CustomValidator} from "../types/CustomValidator";
 import {messages} from "../constants/messages";
 
-export class CardValidator extends BaseValidator implements IValidator<string|{cardNumber: string, provider?: CardProvider}> {
-    private rules: CustomValidator<string>[] = [];
-
+export class CardValidator extends BaseValidator<string | {cardNumber: string, provider?: CardProvider}> {
     private checkLuhn(cardNumber: string): boolean {
         let sum = 0;
         let isEvenPosition = false;

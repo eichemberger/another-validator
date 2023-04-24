@@ -14,9 +14,6 @@ import {
   URL_REGEX
 } from "../constants/regex";
 import {BaseValidator} from "./BaseValidator";
-import {ValidationError} from "../errors/ValidationError";
-import {buildErrorMsg} from "../utils/buildErrorMsg";
-import {IValidator} from "../types/IValidator";
 
 interface ValidationAttribute {
     status: boolean;
@@ -32,8 +29,7 @@ const buildValidation = (message: string, validationFunc: RuleFunction<string>, 
   };
 };
 
-export class Validator extends BaseValidator implements IValidator<string> {
-  private rules: CustomValidator<string>[] = [];
+export class Validator extends BaseValidator<string> {
   private isUrlFlag = buildValidation(messages.isUrl, (input: string) => URL_REGEX.test(input));
   private notEmptyFlag = buildValidation(messages.notEmpty, (input) => !(input.length === 0));
   private isEmailFlag = buildValidation(messages.isEmail, (input) => EMAIL_REGEX.test(input));
@@ -117,14 +113,10 @@ export class Validator extends BaseValidator implements IValidator<string> {
     if (length < 0) {
       throw new Error(messages.minLengthSmallerThanZero);
     }
-    if (message !== undefined) {
-      this.minLengthFlag.validationFunc.message  = message;
-    }
 
     this.minLengthFlag.value = length;
     this.minLengthFlag.status = true;
-    this.minLengthFlag.validationFunc.func = (input: string) => input.length >= length;
-    this.rules.push(this.minLengthFlag.validationFunc);
+    this.rules.push({func: (input: string) => input.length >= length, message: message || messages.minLength});
     return this;
   }
 
@@ -144,15 +136,6 @@ export class Validator extends BaseValidator implements IValidator<string> {
     this.maxLengthFlag.status = true;
     this.maxLengthFlag.validationFunc.func = (input: string) => input.length <= length;
     this.rules.push(this.maxLengthFlag.validationFunc);
-    return this;
-  }
-
-  public addRule(rule: (password: string) => boolean, message?: string): this {
-    const newRule = { func: rule, message: messages.customRuleMessage };
-    if (message !== null && message !== undefined) {
-      newRule.message = message;
-    }
-    this.rules.push(newRule);
     return this;
   }
 
@@ -338,48 +321,6 @@ export class Validator extends BaseValidator implements IValidator<string> {
       hashTable[char] = true;
     }
     return false;
-  }
-
-  public isValid(input: string) : boolean {
-    try {
-        this.validate(input);
-        return true;
-    } catch (e) {
-        return false;
-    }
-  }
-
-  public getErrorMessages(input: string): string[] {
-    const nullError = this.handlePossibleNull(input);
-    if (nullError.length > 0) {
-      return nullError;
-    }
-
-    const errorMessages: string[] = [];
-
-    for (const rule of this.rules) {
-      if (!rule.func(input)) {
-        errorMessages.push(rule.message);
-      }
-    }
-
-    return errorMessages;
-  }
-
-  public validate(input: string): void {
-    const errors = this.getErrorMessages(input);
-
-    if (errors.length > 0) {
-      throw new ValidationError(buildErrorMsg(this.name), errors);
-    }
-  }
-
-  public assertIsValid(input: string): void {
-    for (const rule of this.rules) {
-      if (!rule.func(input)) {
-        throw new ValidationError(rule.message, [rule.message]);
-      }
-    }
   }
 
 }

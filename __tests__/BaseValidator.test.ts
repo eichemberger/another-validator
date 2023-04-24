@@ -2,7 +2,7 @@ import {ValidationError} from "../src/errors/ValidationError";
 import {commonMessages} from "../src/constants/messages";
 import {BaseValidator} from "../src/validators/BaseValidator";
 
-class TestValidator extends BaseValidator {
+class TestValidator extends BaseValidator<any> {
     public testHandlePossibleNull(input: any) {
         return this.handlePossibleNull(input);
     }

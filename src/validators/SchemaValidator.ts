@@ -5,7 +5,7 @@ import {IValidator} from "../types/IValidator";
 import {baseMessages, commonMessages} from "../constants/messages";
 
 interface Schema {
-    [key: string]: BaseValidator | SchemaValidator;
+    [key: string]: BaseValidator<any> | SchemaValidator;
 }
 
 export class SchemaValidator implements IValidator<any> {
@@ -111,7 +111,7 @@ export class SchemaValidator implements IValidator<any> {
             }
 
             if (!input.hasOwnProperty(key) && this.schema[key] instanceof BaseValidator) {
-                const validator = this.schema[key] as BaseValidator;
+                const validator = this.schema[key] as BaseValidator<any>;
                 if (!validator.getIsNullable()) {
                     errorMessages[fieldName] = validator.getErrorMessages(inputValue);
                 }
