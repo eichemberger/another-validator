@@ -1,14 +1,13 @@
 import {BaseValidator} from "./BaseValidator";
 import {ValidationError} from "../errors/ValidationError";
 import {buildErrorMsg} from "../utils/buildErrorMsg";
-import {IValidator} from "../types/IValidator";
 import {baseMessages, commonMessages} from "../constants/messages";
 
 interface Schema {
     [key: string]: BaseValidator<any> | SchemaValidator;
 }
 
-export class SchemaValidator implements IValidator<any> {
+export class SchemaValidator {
     private readonly schema: Schema;
     private readonly name: string | null = null;
     private isNullableFlag = false;
