@@ -21,6 +21,10 @@ This package provides a set of validators that you can use to validate user inpu
 - `SchemaValidator` - Validates an object. It can validate multiple inputs at once. You can nest SchemaValidator for complex objects and arrays.
 - `ArrayValidator` - Validates that each element in an array meets the specified requirements.
 
+### Functions
+
+If you only need to validate a simple condition, for example if the string is a mail or an url you can use a simple function. This package provides a set of functions that you can use to validate input.
+Go to the [functions documentation](#functions) for more information.
 
 ### Add validations 
 
@@ -245,6 +249,42 @@ These methods are available for all validators.
 | `isValid` | Checks if the input is valid according to the validation rules. | `input: any`              |
 | `getErrorMessages` | Returns an array of error messages for the input based on the validation rules. | `input: any`              |
 | `validate` | Validates the input and throws a ValidationError if it does not pass the validation rules. | `input: any`                 |
+
+## <a id="functions"></a> Functions 
+
+### String validations 
+| Method                    | Description                    | Parameters                                          |
+|---------------------------|--------------------------------|-----------------------------------------------------|
+| isEmail                   | Checks if is a valid email address | email: string                                       |
+| isUrl                     | Checks if is a valid URL. If strict = true, the url must have a valid protocol (https, http), by default this value is false | url: string, strict?: boolean                       |
+| containsOnlyNumbers       | Checks if contains only numbers | input: string                                       |
+| containsOnlyLetters       | Checks if contains only letters | input: string                                       |
+| containsUppercase         | Checks if contains at least one uppercase letter | input: string                                       |
+| containsLowercase         | Checks if contains at least one lowercase letter | input: string                                       |
+| containsSpecialCharacter  | Checks if contains at least one special character | input: string                                       |
+| containsNumbers           | Checks if contains at least one number | input: string                                       |
+| notContainsNumbers        | Checks if does not contain any numbers | input: string                                       |
+| notContainsSpecialCharacter | Checks if does not contain any special characters | input: string                                       |
+| notContainsWhitespace     | Checks if does not contain any whitespace | input: string                                       |
+| isIP                      | Checks if is a valid IP address | input: string                                       |
+| isISO8601                 | Checks if is a valid ISO 8601 date or datetime string | dateString: string                                  |
+| isBTCAddress              | Checks if is a valid Bitcoin address | address: string                                     |
+| isETHAddress              | Checks if is a valid Ethereum address | address: string                                     |
+| isJWT                     | Checks if is a valid JSON Web Token (JWT) | token: string                                       |
+| isNotBlank                | Checks if is not blank (contains non-whitespace chars) | input: string                                       |
+| hasLength                 | Checks if has a specific length | input: string, length: number                       |
+| isNotEmpty                | Checks if is not empty         | input: string                                       |
+| containsRepeatedChars     | Checks if contains any repeated characters | str: string                                         |
+
+### Credit Card validations
+
+| Method                           | Description                                                                 | Parameters                                                                                       |
+|----------------------------------|-----------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| isAValidCreditCardNumber         | Checks if a string is a valid credit card number using Luhn algorithm       | cardNumber: string                                                                               |
+| isExpirationDateValid            | Checks if a credit card expiration date is valid. The format must be (MM/YY) | expirationDate: string                                                                           |
+| isCreditCardNumberAndProviderValid | Checks if a credit card number is valid for a given card provider           | cardNumber: string, provider: CardProvider                                                       |
+| isCreditCardValid                | Checks if a credit card has a valid number, provider, and expiration date   | {cardNumber: string, provider: CardProvider, expirationDate: string}                            |
+
 
 ## TypeScript Support
 
