@@ -1,11 +1,11 @@
 export enum CardProvider {
-    Visa = "Visa",
-    MasterCard = "MasterCard",
-    AmericanExpress = "AmericanExpress",
-    Discover = "Discover",
     JCB = "JCB",
-    DinersClub = "DinersClub",
-    TarjetaNaranja = "TarjetaNaranja",
+    Visa = "Visa",
     Maestro = "Maestro",
     UnionPay = "UnionPay",
+    Discover = "Discover",
+    DinersClub = "DinersClub",
+    MasterCard = "MasterCard",
+    TarjetaNaranja = "TarjetaNaranja",
+    AmericanExpress = "AmericanExpress",
 }
