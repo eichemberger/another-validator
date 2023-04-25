@@ -12,15 +12,6 @@ import {
 } from "../functions/creditCardValidations";
 
 export class CardValidator extends BaseValidator<string | {cardNumber: string, provider?: CardProvider, expirationDate?: string}> {
-    public addRule(rule: (input: string) => boolean, message?: string): this {
-        const newRule = { func: rule, message: messages.customRuleMessage };
-        if (message !== null && message !== undefined) {
-            newRule.message = message;
-        }
-        this.rules.push(newRule);
-        return this;
-    }
-
     public static isCardProviderValid(cardNumber: string, provider: CardProvider): boolean {
         return isCreditCardNumberAndProviderValid(cardNumber, provider);
     }

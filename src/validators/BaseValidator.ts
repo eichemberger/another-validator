@@ -7,13 +7,13 @@ export abstract class BaseValidator<T> {
     public name: string | null;
     protected isNullableFlag = false;
     protected notNullFlag = {status: false, message: "" };
-    protected rules: CustomValidator<T>[] = [];
+    protected rules: CustomValidator[] = [];
 
     constructor(fieldName?: string) {
         this.name = fieldName || null;
     }
 
-    public addRule(rule: (value: T) => boolean, message?: string): BaseValidator<T> {
+    public addRule(rule: (value?: any) => boolean, message?: string): BaseValidator<T> {
         const newRule = { func: rule, message: messages.customRuleMessage };
         if (message !== null && message !== undefined) {
             newRule.message = message;

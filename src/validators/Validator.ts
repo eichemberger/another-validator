@@ -22,10 +22,10 @@ import {
 interface ValidationAttribute {
     status: boolean;
     value?: any;
-    validationFunc: CustomValidator<string>;
+    validationFunc: CustomValidator;
 }
 
-const buildValidation = (message: string, validationFunc: RuleFunction<string>, value?: any): ValidationAttribute => {
+const buildValidation = (message: string, validationFunc: RuleFunction, value?: any): ValidationAttribute => {
   return {
     status: false,
     validationFunc: {func: validationFunc, message},
