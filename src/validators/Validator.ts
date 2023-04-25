@@ -1,19 +1,23 @@
 import {CustomValidator, RuleFunction} from "../types/CustomValidator";
 import {messages} from "../constants/messages";
-import {
-  EMAIL_REGEX,
-  LOWERCASE_REGEX,
-  NO_NUMBERS_REGEX,
-  NO_SPECIAL_CHARS_REGEX,
-  NO_WHITESPACES_REGEX,
-  NUMBER_REGEX,
-  ONLY_CHARS_REGEX,
-  ONLY_NUMBERS_REGEX,
-  SPECIAL_CHAR_REGEX,
-  UPPERCASE_REGEX,
-  URL_REGEX
-} from "../constants/regex";
 import {BaseValidator} from "./BaseValidator";
+import {
+  isUrl,
+  isEmail,
+  hasLength,
+  isNotEmpty,
+  isNotBlank,
+  containsNumbers,
+  containsUppercase,
+  containsLowercase,
+  notContainsNumbers,
+  containsOnlyLetters,
+  containsOnlyNumbers,
+  notContainsWhitespace,
+  containsSpecialCharacter,
+  notContainsRepeatedChars,
+  notContainsSpecialCharacter
+} from "../functions/validations";
 
 interface ValidationAttribute {
     status: boolean;
@@ -30,23 +34,34 @@ const buildValidation = (message: string, validationFunc: RuleFunction<string>, 
 };
 
 export class Validator extends BaseValidator<string> {
+  // Length
   private minLengthFlag = {value: 0, status: false};
+  private fixedLengthFlag = {value: 0, status: false};
   private maxLengthFlag = {value: Infinity, status: false};
-  private isUrlFlag = buildValidation(messages.isUrl, (input: string) => URL_REGEX.test(input));
-  private notEmptyFlag = buildValidation(messages.notEmpty, (input) => !(input.length === 0));
-  private isEmailFlag = buildValidation(messages.isEmail, (input) => EMAIL_REGEX.test(input));
-  private hasNumber = buildValidation(messages.hasNumber,(input) => NUMBER_REGEX.test(input));
-  private notBlankFlag = buildValidation(messages.notBlank, (input) => !(input.trim().length === 0));
-  private noNumbersFlag = buildValidation(messages.noNumbers, (input) => !NO_NUMBERS_REGEX.test(input));
-  private hasUppercase = buildValidation(messages.hasUppercase, (input) => UPPERCASE_REGEX.test(input));
-  private hasLowercase = buildValidation(messages.hasLowercase, (input) => LOWERCASE_REGEX.test(input));
-  private onlyNumbersFlag = buildValidation(messages.onlyNumbers, (input) => ONLY_NUMBERS_REGEX.test(input));
-  private onlyCharactersFlag = buildValidation(messages.onlyCharacters, (input) => ONLY_CHARS_REGEX.test(input));
-  private noWhitespacesFlag = buildValidation(messages.noWhitespaces, (input) => !NO_WHITESPACES_REGEX.test(input));
-  private hasSpecialCharacter = buildValidation(messages.hasSpecialCharacter, (input) => SPECIAL_CHAR_REGEX.test(input));
-  private noRepeatedCharactersFlag = buildValidation(messages.noRepeatedCharacters, (input) => !this.hasRepeatedChars(input));
-  private noSpecialCharactersFlag = buildValidation(messages.noSpecialCharacters, (input) => NO_SPECIAL_CHARS_REGEX.test(input));
-  private fixedLengthFlag = buildValidation(messages.fixedLength, (input) => input.length === this.fixedLengthFlag.value, 0);
+
+  // Contains smt
+  private hasNumber = buildValidation(messages.hasNumber,containsNumbers);
+  private hasUppercase = buildValidation(messages.hasUppercase, containsUppercase);
+  private hasLowercase = buildValidation(messages.hasLowercase, containsLowercase);
+  private hasSpecialCharacter = buildValidation(messages.hasSpecialCharacter, containsSpecialCharacter);
+
+  // Only numbers or chars
+  private onlyNumbersFlag = buildValidation(messages.onlyNumbers, containsOnlyNumbers);
+  private onlyCharactersFlag = buildValidation(messages.onlyCharacters, containsOnlyLetters);
+
+  // Does not contain smt
+  private notBlankFlag = buildValidation(messages.notBlank, isNotBlank);
+  private noNumbersFlag = buildValidation(messages.noNumbers, notContainsNumbers);
+  private noWhitespacesFlag = buildValidation(messages.noWhitespaces, notContainsWhitespace);
+  private noRepeatedCharactersFlag = buildValidation(messages.noRepeatedCharacters, notContainsRepeatedChars);
+  private noSpecialCharactersFlag = buildValidation(messages.noSpecialCharacters, notContainsSpecialCharacter);
+
+  // special types
+  private isUrlFlag = buildValidation(messages.isUrl, isUrl);
+  private isEmailFlag = buildValidation(messages.isEmail, isEmail);
+
+  // Other
+  private notEmptyFlag = buildValidation(messages.notEmpty, isNotEmpty);
 
   constructor(field?: string) {
     super(field);
@@ -73,13 +88,10 @@ export class Validator extends BaseValidator<string> {
     if (length < 1) {
       throw new Error("fixed length cannot be less than 1");
     }
-    if (message !== undefined) {
-      this.fixedLengthFlag.validationFunc.message  = message;
-    }
 
     this.fixedLengthFlag.value = length;
     this.fixedLengthFlag.status = true;
-    this.rules.push(this.fixedLengthFlag.validationFunc);
+    this.rules.push({func: (input) =>  hasLength(input, length), message: message || messages.fixedLength});
     return this;
   }
 
@@ -303,18 +315,6 @@ export class Validator extends BaseValidator<string> {
 
   private throwError(func1Name: string, func2Name: string) {
     throw new Error(`${func1Name}() cannot be used with ${func2Name}()`);
-  }
-
-  private hasRepeatedChars(str: string): boolean {
-    const hashTable: { [key: string]: boolean } = {};
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charAt(i);
-      if (hashTable[char]) {
-        return true;
-      }
-      hashTable[char] = true;
-    }
-    return false;
   }
 
 }
