@@ -1,13 +1,17 @@
 export const messages = {
+    isUrl: "the value is not a valid url",
+    isJWT: "the value is not a valid JWT",
     notEmpty: "the value cannot be empty",
     notBlank: "the value cannot be blank",
-    isUrl: "the value is not a valid url",
     isEmail: "the value is not a valid email",
     maxLength: "the value exceeds the maximum length",
     onlyNumbers: "the value must contain only numbers",
+    isISO8601: "the value is not a valid ISO8601 date",
     minGreaterThanMax: "min cannot be greater than max",
-    noNumbers: "the value must not contain any numbers",
     maxSmallerThanMin: "max cannot be smaller than min",
+    noNumbers: "the value must not contain any numbers",
+    isBTCAddress: "the value is not a valid BTC address",
+    isETHAddress: "the value is not a valid ETH address",
     hasNumber: "the value must contain at least one number",
     minLength: "the value does not meet the minimum length",
     fixedLength: "the value does not meet the fixed length",
@@ -23,7 +27,7 @@ export const messages = {
     maxLengthSmallerThanMin: "max length cannot be smaller than min length",
     noSpecialCharacters: "the value must not contain any special characters",
     noRepeatedCharacters: "the value must not contain any repeated characters",
-    hasSpecialCharacter: "the value must contain at least one special character"
+    hasSpecialCharacter: "the value must contain at least one special character",
 };
 
 export const numberMessages = {
