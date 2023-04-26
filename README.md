@@ -11,6 +11,11 @@ Whether you're building a simple form or a complex application, this validator i
 
 ## Usage
 
+### Functions
+
+If you only need to validate a simple condition, for example if the string is a mail or an url you can use a simple function. This package provides a set of functions that you can use to validate input.
+Go to the functions documentation for more information (is after the validators methods).
+
 ### Validators 
 
 This package provides a set of validators that you can use to validate user input.
@@ -20,11 +25,6 @@ This package provides a set of validators that you can use to validate user inpu
 - `CardValidator` - Validates a credit card number (Uses Luhn's Algorithm). It can validate a number of different card types, including Visa, MasterCard, American Express, Discover, etc.
 - `SchemaValidator` - Validates an object. It can validate multiple inputs at once. You can nest SchemaValidator for complex objects and arrays.
 - `ArrayValidator` - Validates that each element in an array meets the specified requirements.
-
-### Functions
-
-If you only need to validate a simple condition, for example if the string is a mail or an url you can use a simple function. This package provides a set of functions that you can use to validate input.
-Go to the [functions documentation](#functions) for more information.
 
 ### Add validations 
 
@@ -74,8 +74,6 @@ const schemaValidator = new SchemaValidator({
 
 schemaValidator.validate(someObject);
 ```
-
-
 ## Available methods
 
 Each validator has three common methods:
@@ -99,7 +97,6 @@ You should use `getErrors` if you want to get detailed information about the err
 | `isUrl` | Validates that the input is a valid URL. | `message?: string` (optional)                                  |
 | `minLength` | Validates that the input has a minimum length. | `length: number`, `message?: string` (optional)                |
 | `maxLength` | Validates that the input has a maximum length. | `length: number`, `message?: string` (optional)                |
-| `addRule` | Adds a custom validation rule. | `rule: (input: string) => boolean`, `message?: string` (optional) |
 | `requireUppercase` | Validates that the input contains at least one uppercase character. | `message?: string` (optional)                                  |
 | `requireLowercase` | Validates that the input contains at least one lowercase character. | `message?: string` (optional)                                  |
 | `requireNumber` | Validates that the input contains at least one number. | `message?: string` (optional)                                  |
@@ -119,7 +116,6 @@ When setting a max or min these values are inclusive.
 |--------|--------------------------------------------------------------|--------------------------------------------------------------|
 | `min` | Sets the minimum allowed value for the input.                | `value: number`, `message?: string` (optional)               |
 | `max` | Sets the maximum allowed value for the input.                | `value: number`, `message?: string` (optional)               |
-| `addRule` | Adds a custom validation rule.                               | `rule: (input: number) => boolean`, `message?: string` (optional) |
 | `isNegative` | Checks if the input is negative                              | `message?: string` |
 | `isPositive` | Checks if the input is positive (bigger than 0)              | `message?: string` |
 | `isNonNegative` | Checks if the input is non-negative (i.e., zero or positive) | `message?: string` |
@@ -132,7 +128,6 @@ If it is used with SchemaValidator it will only validate the card number.
 
 | Method                 | Description                                                                                                                    | Parameters                                                                                                             |
 |------------------------|--------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| addRule                | Adds a custom rule to the list of rules                                                                                        | rule: (input: string) => boolean, message?: string                                                                     |
 | isCardProviderValid    | Checks if the card number is valid for the given card provider                                                                 | cardNumber: string, provider: CardProvider                                                                             |
 | validateExpiration     | Validates the expiration date of a credit card                                                                                 | expiration: string                                                                                                      |
 | validate               | Validates the credit card input based on the card number, provider, and expiration date. The date must have the format (MM/YY) | input: {cardNumber: string, provider?: CardProvider, expirationDate?: string} \| string                                |
@@ -238,18 +233,6 @@ console.log(errors);
 */
 ```
 
-### Common methods
-
-These methods are available for all validators.
-
-| Method | Description | Parameters                   |
-|--------|-------------|------------------------------|
-| `isNullable` | Allows the input to be nullable. | -                            |
-| `notNull` | Requires the input to be non-null. | `message?: string` (optional) |
-| `isValid` | Checks if the input is valid according to the validation rules. | `input: any`              |
-| `getErrorMessages` | Returns an array of error messages for the input based on the validation rules. | `input: any`              |
-| `validate` | Validates the input and throws a ValidationError if it does not pass the validation rules. | `input: any`                 |
-
 ## <a id="functions"></a> Functions 
 
 ### String validations 
@@ -284,6 +267,41 @@ These methods are available for all validators.
 | isExpirationDateValid            | Checks if a credit card expiration date is valid. The format must be (MM/YY) | expirationDate: string                                                                           |
 | isCreditCardNumberAndProviderValid | Checks if a credit card number is valid for a given card provider           | cardNumber: string, provider: CardProvider                                                       |
 | isCreditCardValid                | Checks if a credit card has a valid number, provider, and expiration date   | {cardNumber: string, provider: CardProvider, expirationDate: string}                            |
+
+Providers:
+
+- Visa
+- MasterCard
+- AmericanExpress
+- Discover
+- JBC
+- DinersClub
+- Maestro
+- UnionPay
+- TarjetaNaranja
+
+Example: 
+
+```js 
+isCreditCardValid({
+  cardNumber: "4111111111111111", 
+  provider: CardProvider.Visa, 
+  expirationDate: "12/03"
+}); 
+```
+
+### Date validations
+
+| Method            | Description                                                   | Params                    |
+| ----------------- | ------------------------------------------------------------- | ------------------------- |
+| `isPastDate`      | Check if a date is in the past                                 | `date: Date`              |
+| `isFutureDate`    | Check if a date is in the future                               | `date: Date`              |
+| `isSameDay`       | Check if two dates are on the same day                         | `date1: Date, date2: Date` |
+| `isSameMonth`     | Check if two dates are in the same month                       | `date1: Date, date2: Date` |
+| `isSameYear`      | Check if two dates are in the same year                        | `date1: Date, date2: Date` |
+| `isLeapYear`      | Determine if a year is a leap year                             | `year: number`            |
+| `isValidDate`     | Validate a date object                                         | `date: Date`              |
+| `isDateInRange`   | Check if a date is within a specified range                    | `date: Date, startDate: Date, endDate: Date` |
 
 
 ## TypeScript Support
