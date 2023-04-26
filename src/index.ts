@@ -9,4 +9,5 @@ export { NumberValidator } from "./validators/NumberValidator";
 export { SchemaValidator } from "./validators/SchemaValidator";
 
 export * from "./functions/validations";
+export * from "./functions/dateValidations";
 export * from "./functions/creditCardValidations";
