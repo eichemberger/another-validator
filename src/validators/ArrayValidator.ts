@@ -1,7 +1,7 @@
 import {Validator} from "./Validator";
 import {NumberValidator} from "./NumberValidator";
 import {arrayMessages, commonMessages} from "../constants/messages";
-import {BaseValidator} from "./BaseValidator";
+import {BaseValidator} from "./base/BaseValidator";
 import {SchemaValidator} from "./SchemaValidator";
 
 export class ArrayValidator<T> extends BaseValidator<T> {

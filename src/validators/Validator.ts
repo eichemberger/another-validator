@@ -1,6 +1,6 @@
 import {CustomValidator, RuleFunction} from "../types/CustomValidator";
 import {messages} from "../constants/messages";
-import {BaseValidator} from "./BaseValidator";
+import {BaseValidator} from "./base/BaseValidator";
 import {
   isUrl,
   isEmail,

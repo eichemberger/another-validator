@@ -1,6 +1,5 @@
 export { Validator } from "./validators/Validator";
 export { CardProvider } from "./constants/CardProvider";
-export { BaseValidator } from "./validators/BaseValidator";
 export { CardValidator } from "./validators/CardValidator";
 export { ValidationError } from "./errors/ValidationError";
 export { CreditCardError } from "./errors/CreditCardError";

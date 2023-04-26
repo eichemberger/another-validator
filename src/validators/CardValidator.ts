@@ -1,8 +1,7 @@
 import {CardProvider} from "../constants/CardProvider";
-import {BaseValidator} from "./BaseValidator";
+import {BaseValidator} from "./base/BaseValidator";
 import {ValidationError} from "../errors/ValidationError";
 import {buildErrorMsg} from "../utils/buildErrorMsg";
-import {messages} from "../constants/messages";
 import {ICreditCardError} from "../types/ICreditCardError";
 import {CreditCardError} from "../errors/CreditCardError";
 import {

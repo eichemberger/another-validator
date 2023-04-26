@@ -1,4 +1,4 @@
-import { BaseValidator } from "./BaseValidator";
+import { BaseValidator } from "./base/BaseValidator";
 import { numberMessages } from "../constants/messages";
 
 export class NumberValidator extends BaseValidator<number> {

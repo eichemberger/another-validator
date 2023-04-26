@@ -1,19 +1,19 @@
-import {BaseValidator} from "./BaseValidator";
+import {BaseValidator} from "./base/BaseValidator";
 import {ValidationError} from "../errors/ValidationError";
 import {buildErrorMsg} from "../utils/buildErrorMsg";
 import {baseMessages, commonMessages} from "../constants/messages";
+import {ParentValidator} from "./base/ParentValidator";
 
 interface Schema {
     [key: string]: BaseValidator<any> | SchemaValidator;
 }
 
-export class SchemaValidator {
+export class SchemaValidator extends ParentValidator {
     private readonly schema: Schema;
     private readonly name: string | null = null;
-    private isNullableFlag = false;
-    private notNullFlag = {status: false, message: "" };
 
     constructor(schema: any, name?: string) {
+        super();
         this.schema = schema;
         this.name = name || null;
     }
@@ -111,7 +111,7 @@ export class SchemaValidator {
 
             if (!input.hasOwnProperty(key) && this.schema[key] instanceof BaseValidator) {
                 const validator = this.schema[key] as BaseValidator<any>;
-                if (!validator.getIsNullable()) {
+                if (!validator['isNullableFlag']) {
                     errorMessages[fieldName] = validator.getErrorMessages(inputValue);
                 }
                 continue;
@@ -138,9 +138,5 @@ export class SchemaValidator {
         }
 
         return errorMessages;
-    }
-
-    isValid(input: any): boolean {
-        return this.getErrorMessages(input).length === 0;
     }
 }
