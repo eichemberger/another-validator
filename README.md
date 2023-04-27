@@ -14,7 +14,7 @@ Whether you're building a simple form or a complex application, this validator i
 ### Functions
 
 If you only need to validate a simple condition, for example if the string is a mail or an url you can use a simple function. This package provides a set of functions that you can use to validate input.
-Go to the functions documentation for more information (is after the validators methods).
+Go to the functions documentation for more information (is below the validators methods).
 
 ### Validators 
 
@@ -74,6 +74,11 @@ const schemaValidator = new SchemaValidator({
 
 schemaValidator.validate(someObject);
 ```
+
+### Sanitizers 
+
+This package offers some sanitizers for strings. You can use them to sanitize user input before validating it.
+
 ## Available methods
 
 Each validator has three common methods:
@@ -233,7 +238,7 @@ console.log(errors);
 */
 ```
 
-## <a id="functions"></a> Functions 
+## Functions 
 
 ### String validations 
 | Method                    | Description                    | Parameters                                          |
@@ -303,6 +308,17 @@ isCreditCardValid({
 | `isValidDate`     | Validate a date object                                         | `date: Date`              |
 | `isDateInRange`   | Check if a date is within a specified range                    | `date: Date, startDate: Date, endDate: Date` |
 
+
+## Sanitizers 
+
+| Method                | Description                                                   | Parameters         |
+|-----------------------|---------------------------------------------------------------|--------------------|
+| `keepAlphanumeric`    | Removes all non-alphanumeric characters from the input string | `input: string`    |
+| `keepOnlyNumbers`     | Keeps only numeric characters in the input string             | `input: string`    |
+| `keepOnlyCharacters`  | Keeps only alphabetic characters in the input string          | `input: string`    |
+| `camelCaseToSnakeCase`| Converts a camelCase string to a snake_case string            | `input: string`    |
+| `snakeCaseToCamelCase`| Converts a snake_case string to a camelCase string            | `input: string`    |
+| `normalizeSpanishInput`| Removes tildes from Spanish vowels and replaces ñ with n in the input string | `input: string`|
 
 ## TypeScript Support
 
