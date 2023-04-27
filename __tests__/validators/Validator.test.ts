@@ -1,7 +1,7 @@
-import {Validator} from "../src/validators/Validator";
-import {commonMessages, messages} from "../src/constants/messages";
-import {ValidationError} from "../src/errors/ValidationError";
-import {buildErrorMsg} from "../src/utils/buildErrorMsg";
+import {Validator} from "../../src/validators/Validator";
+import {commonMessages, messages} from "../../src/constants/messages";
+import {ValidationError} from "../../src/errors/ValidationError";
+import {buildErrorMsg} from "../../src/utils/buildErrorMsg";
 
 const throwError = (v: Validator, input: string) => {
   const errors = v.getErrorMessages(input);

@@ -1,5 +1,5 @@
-import {NumberValidator} from "../src/validators/NumberValidator";
-import {commonMessages, numberMessages} from "../src/constants/messages";
+import {NumberValidator} from "../../src/validators/NumberValidator";
+import {commonMessages, numberMessages} from "../../src/constants/messages";
 
 describe('NumberValidator', () => {
     let validator: NumberValidator;

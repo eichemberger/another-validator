@@ -1,9 +1,9 @@
-import {arrayMessages, commonMessages} from "../src/constants/messages";
-import {Validator} from "../src/validators/Validator";
-import {ArrayValidator} from "../src/validators/ArrayValidator";
-import {NumberValidator} from "../src/validators/NumberValidator";
-import {ValidationError} from "../src/errors/ValidationError";
-import {SchemaValidator} from "../src/validators/SchemaValidator";
+import {arrayMessages, commonMessages} from "../../src/constants/messages";
+import {Validator} from "../../src/validators/Validator";
+import {ArrayValidator} from "../../src/validators/ArrayValidator";
+import {NumberValidator} from "../../src/validators/NumberValidator";
+import {ValidationError} from "../../src/errors/ValidationError";
+import {SchemaValidator} from "../../src/validators/SchemaValidator";
 
 describe("ArrayValidator", () => {
     let validator: Validator | NumberValidator | SchemaValidator;

@@ -1,7 +1,7 @@
-import {CardValidator} from "../src/validators/CardValidator";
-import {ValidationError} from "../src/errors/ValidationError";
-import {CardProvider} from "../src/constants/CardProvider";
-import {CreditCardError} from "../src/errors/CreditCardError";
+import {CardValidator} from "../../src/validators/CardValidator";
+import {ValidationError} from "../../src/errors/ValidationError";
+import {CardProvider} from "../../src/constants/CardProvider";
+import {CreditCardError} from "../../src/errors/CreditCardError";
 
 
 describe('CardValidator', () => {

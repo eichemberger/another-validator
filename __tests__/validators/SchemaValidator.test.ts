@@ -1,9 +1,9 @@
-import {NumberValidator} from "../src/validators/NumberValidator";
-import {Validator} from "../src/validators/Validator";
-import {SchemaValidator} from "../src/validators/SchemaValidator";
-import {messages, numberMessages} from "../src/constants/messages";
-import {ArrayValidator} from "../src/validators/ArrayValidator";
-import {ValidationError} from "../src/errors/ValidationError";
+import {NumberValidator} from "../../src/validators/NumberValidator";
+import {Validator} from "../../src/validators/Validator";
+import {SchemaValidator} from "../../src/validators/SchemaValidator";
+import {messages, numberMessages} from "../../src/constants/messages";
+import {ArrayValidator} from "../../src/validators/ArrayValidator";
+import {ValidationError} from "../../src/errors/ValidationError";
 
 
 describe('SchemaValidator', () => {
