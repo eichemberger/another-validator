@@ -40,8 +40,8 @@ const passwordValidator = new Validator()
   .maxLength(10)
   .requireLowercase("this input requires a lowercase letter")
   .requireUppercase()
-  .requireDigits()
-  .requireSpecialCharacters()
+  .requireNumber()
+  .requireSpecialCharacter()
   .addRule((input) => {
     return !input.includes("example");
   });
@@ -93,25 +93,26 @@ You should use `getErrors` if you want to get detailed information about the err
 
 ### Validator 
 
-| Method | Description | Parameters                                                     |
-|--------|-------------|----------------------------------------------------------------|
-| `notEmpty` | Validates that the input is not empty. | `message?: string` (optional)                                  |
-| `notBlank` | Validates that the input is not blank (contains non-whitespace characters). | `message?: string` (optional)                                  |
-| `fixedLength` | Validates that the input has a fixed length. | `length: number`, `message?: string` (optional)                |
-| `isEmail` | Validates that the input is a valid email. | `message?: string` (optional)                                  |
-| `isUrl` | Validates that the input is a valid URL. | `message?: string` (optional)                                  |
-| `minLength` | Validates that the input has a minimum length. | `length: number`, `message?: string` (optional)                |
-| `maxLength` | Validates that the input has a maximum length. | `length: number`, `message?: string` (optional)                |
-| `requireUppercase` | Validates that the input contains at least one uppercase character. | `message?: string` (optional)                                  |
-| `requireLowercase` | Validates that the input contains at least one lowercase character. | `message?: string` (optional)                                  |
-| `requireNumber` | Validates that the input contains at least one number. | `message?: string` (optional)                                  |
-| `requireSpecialCharacter` | Validates that the input contains at least one special character. | `message?: string` (optional)                                  |
-| `noWhitespaces` | Validates that the input contains no whitespace characters. | `message?: string` (optional)                                  |
-| `noNumbers` | Validates that the input contains no numbers. | `message?: string` (optional)                                  |
-| `noSpecialCharacters` | Validates that the input contains no special characters. | `message?: string` (optional)                                  |
-| `onlyNumbers` | Validates that the input contains only numbers. | `message?: string` (optional)                                  |
-| `noRepeatedCharacters` | Validates that the input contains no repeated characters. | `message?: string` (optional)                                  |
-| `onlyCharacters` | Validates that the input contains only alphabetical characters. | `message?: string` (optional)                                  |
+| Method | Description | Parameters                                           |
+|--------|-------------|------------------------------------------------------|
+| `notEmpty` | Validates that the input is not empty. | `message?: string` (optional)                        |
+| `notBlank` | Validates that the input is not blank (contains non-whitespace characters). | `message?: string` (optional)                        |
+| `fixedLength` | Validates that the input has a fixed length. | `length: number`, `message?: string` (optional)      |
+| `isEmail` | Validates that the input is a valid email. | `message?: string` (optional)                        |
+| `isUrl` | Validates that the input is a valid URL. | `message?: string` (optional)                        |
+| `minLength` | Validates that the input has a minimum length. | `length: number`, `message?: string` (optional)      |
+| `maxLength` | Validates that the input has a maximum length. | `length: number`, `message?: string` (optional)      |
+| `requireUppercase` | Validates that the input contains at least one uppercase character. | `message?: string` (optional)                        |
+| `requireLowercase` | Validates that the input contains at least one lowercase character. | `message?: string` (optional)                        |
+| `requireNumber` | Validates that the input contains at least one number. | `message?: string` (optional)                        |
+| `requireSpecialCharacter` | Validates that the input contains at least one special character. | `message?: string` (optional)                        |
+| `noWhitespaces` | Validates that the input contains no whitespace characters. | `message?: string` (optional)                        |
+| `noNumbers` | Validates that the input contains no numbers. | `message?: string` (optional)                        |
+| `noSpecialCharacters` | Validates that the input contains no special characters. | `message?: string` (optional)                        |
+| `onlyNumbers` | Validates that the input contains only numbers. | `message?: string` (optional)                        |
+| `noRepeatedCharacters` | Validates that the input contains no repeated characters. | `message?: string` (optional)                        |
+| `onlyCharacters` | Validates that the input contains only alphabetical characters. | `message?: string` (optional)                        |
+| `addRule` | Adds a custom validation rule. The validation function should return a boolean value. If the function returns `true`, the input is considered valid. If the function returns `false`, the input is considered invalid. | `(input?) => boolean`, `message?: string` (optional) |
 
 When setting a max or min these values are inclusive.
 
@@ -124,6 +125,8 @@ When setting a max or min these values are inclusive.
 | `isNegative` | Checks if the input is negative                              | `message?: string` |
 | `isPositive` | Checks if the input is positive (bigger than 0)              | `message?: string` |
 | `isNonNegative` | Checks if the input is non-negative (i.e., zero or positive) | `message?: string` |
+| `addRule` | Adds a custom validation rule. The validation function should return a boolean value. If the function returns `true`, the input is considered valid. If the function returns `false`, the input is considered invalid. | `(input?) => boolean`, `message?: string` (optional) |
+
 
 When setting a max or min these values are inclusive.
 
@@ -133,10 +136,11 @@ If it is used with SchemaValidator it will only validate the card number.
 
 | Method                 | Description                                                                                                                    | Parameters                                                                                                             |
 |------------------------|--------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| isCardProviderValid    | Checks if the card number is valid for the given card provider                                                                 | cardNumber: string, provider: CardProvider                                                                             |
-| validateExpiration     | Validates the expiration date of a credit card                                                                                 | expiration: string                                                                                                      |
-| validate               | Validates the credit card input based on the card number, provider, and expiration date. The date must have the format (MM/YY) | input: {cardNumber: string, provider?: CardProvider, expirationDate?: string} \| string                                |
-| getErrorMessages       | Returns an array of error messages based on the card number, provider, and expiration date                                     | input: {cardNumber: string, provider?: CardProvider, expirationDate?: string} \| string                                |
+| `isCardProviderValid`    | Checks if the card number is valid for the given card provider                                                                 | cardNumber: string, provider: CardProvider                                                                             |
+| `validateExpiration`     | Validates the expiration date of a credit card                                                                                 | expiration: string                                                                                                      |
+| `validate`               | Validates the credit card input based on the card number, provider, and expiration date. The date must have the format (MM/YY) | input: {cardNumber: string, provider?: CardProvider, expirationDate?: string} \| string                                |
+| `getErrorMessages`       | Returns an array of error messages based on the card number, provider, and expiration date                                     | input: {cardNumber: string, provider?: CardProvider, expirationDate?: string} \| string                                |
+| `addRule` | Adds a custom validation rule. The validation function should return a boolean value. If the function returns `true`, the input is considered valid. If the function returns `false`, the input is considered invalid. | `(input?) => boolean`, `message?: string` (optional) |
 
 If you are using TypeScript, you must use the `CardProvider` enum to specify the card provider
 
@@ -206,6 +210,7 @@ console.log(errors);
 | `notEmpty` | Requires the input array to be non-empty. | `message?: string` (optional) |
 | `noDuplicates` | Requires the input array to have no duplicate elements. | `message?: string` (optional) |
 | `comparator` | Sets the custom comparator function to be used for checking duplicates. | `func: (a: any, b: any) => boolean` |
+| `addRule` | Adds a custom validation rule. The validation function should return a boolean value. If the function returns `true`, the input is considered valid. If the function returns `false`, the input is considered invalid. | `(input?) => boolean`, `message?: string` (optional) |
 
 If you use `noDuplicates` without setting a custom comparator function, the validator will use the `===` operator to check for duplicates.
 When setting a max or min these values are inclusive.
